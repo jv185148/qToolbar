@@ -8,6 +8,10 @@ namespace qCommon.Interfaces
 {
     public interface iMain
     {
+        System.Windows.Controls.WrapPanel iGridArea { get; }
+
         void Dispose();
     }
 }
+    
+

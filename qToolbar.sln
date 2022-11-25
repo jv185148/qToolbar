@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qToolbar", "qToolbar\qToolbar.csproj", "{C746FA11-FEB0-4779-A155-E49863EEB3C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{884B42AC-BD6F-4202-9FBD-ABEA4365686E} = {884B42AC-BD6F-4202-9FBD-ABEA4365686E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qMain", "qMain\qMain.csproj", "{2A62D8B0-5C38-482F-80D4-76219CCC3EDF}"
 EndProject
