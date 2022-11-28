@@ -36,10 +36,23 @@ namespace qData
 
         public class DesktopShortcut : qCommon.Interfaces.iShortcut
         {
-            public string Description { get; set; }
-            public string IconLocation { get; set; }
-            public string TargetPath { get; set; }
-            public string WorkingDirectory { get; set; }
+            private string description;
+            private string iconLocation;
+            private string targetPath;
+            private string workingDirectory;
+
+            public string Description { get => description; set => description = value; }
+            public string IconLocation { get => iconLocation; set => iconLocation = value; }
+            public string TargetPath { get => targetPath; set => targetPath = value; }
+            public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
+
+            public void Dispose()
+            {
+                description = string.Empty;
+                IconLocation = string.Empty;
+                targetPath = string.Empty;
+                workingDirectory = string.Empty;
+            }
         }
     }
 
