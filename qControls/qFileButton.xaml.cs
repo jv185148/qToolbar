@@ -27,17 +27,29 @@ namespace qControls
 
         public event dClicked Clicked;
 
+        string iconLocation;
+        string targetPath;
+        string workingDirectory;
+
         public string Description { get => lblText.Content.ToString(); set => lblText.Content = value; }
-        public string IconLocation { get; set; }
-        public string TargetPath { get; set; }
-        public string WorkingDirectory { get; set; }
+
 
         public bool isShortcut { get; set; }
-
+        public string IconLocation { get => iconLocation; set => iconLocation = value; }
+        public string TargetPath { get => targetPath; set => targetPath = value; }
+        public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
 
         public qFileButton()
         {
             InitializeComponent();
+        }
+
+
+        public void Dispose()
+        {
+            IconLocation = string.Empty;
+            targetPath = string.Empty;
+            workingDirectory = string.Empty;
         }
 
         private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
@@ -52,6 +64,7 @@ namespace qControls
             this.TargetPath = shortcut.TargetPath;
             this.WorkingDirectory = shortcut.WorkingDirectory;
 
+            shortcut.Dispose();
         }
 
         public void LoadFile(string file)

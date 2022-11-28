@@ -4,18 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:qToolbar"
-        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="qToolbar.MainWindow"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave">
     <Grid DragEnter="Grid_DragEnter" DragOver="Grid_DragOver" Drop="Grid_Drop" DragLeave="Grid_DragLeave">
         <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
             <MenuItem Header="_File" Height="18" Width="54" >
-                <MenuItem Header="Open..."></MenuItem>
+                <MenuItem Header="Open..."/>
                 <Separator Height="1" />
-                <MenuItem Header="E_xit" Name="mnuExit" Click="MenuExit_Click"/>
+                <MenuItem Header="E_xit" x:Name="mnuExit" Click="MenuExit_Click"/>
             </MenuItem>
         </Menu>
-        <WrapPanel Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,20,0,0" />
+        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,20,0,0" >
+            <b:Interaction.Behaviors>
+                <b:FluidMoveBehavior AppliesTo="Children">
+                    <b:FluidMoveBehavior.EaseY>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </b:FluidMoveBehavior.EaseY>
+                    <b:FluidMoveBehavior.EaseX>
+                        <BounceEase EasingMode="EaseOut" Bounciness="5" Bounces="5"/>
+                    </b:FluidMoveBehavior.EaseX>
+                </b:FluidMoveBehavior>
+            </b:Interaction.Behaviors>
+        </WrapPanel>
 
 
     </Grid>
