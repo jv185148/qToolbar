@@ -6,13 +6,29 @@ using System.Threading.Tasks;
 
 namespace qData
 {
-    public abstract class aFile
+    public abstract class aFile:IDisposable
     {
         public abstract string FileName { get; }
 
         private Field[] fields;
 
         public abstract Field[] FieldData { get; }
+        protected abstract void childDispose();
+
+        public void Save()
+        {
+            System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+
+        }
+        public void Load()
+        {
+
+        }
+        
+        public  void Dispose()
+        {
+            childDispose();
+        }
     }
 
     public class Field
