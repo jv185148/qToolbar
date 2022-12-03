@@ -48,6 +48,27 @@ namespace qToolbar
             this.Close();
         }
 
+
+        private void mnuClearItems_Click(object sender, RoutedEventArgs e)
+        {
+            this.main.Clear();
+        }
+
+        private void mnuSettings_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuOpenShortcutCollection_Click(object sender, RoutedEventArgs e)
+        {
+            this.main.OpenShortcutCollection();
+        }
+
+        private void mnuSaveShortcutCollection_Click(object sender, RoutedEventArgs e)
+        {
+            this.main.SaveShortcutCollection();
+        }
+
         #endregion
 
         #region Drag events
@@ -86,6 +107,16 @@ namespace qToolbar
         }
 
         #endregion
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.main.Close();
+        }
 
     }
 }

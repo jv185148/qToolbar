@@ -18,7 +18,7 @@ namespace qControls
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class qFileButton : UserControl, qCommon.Interfaces.iShortcut
+    public partial class qFileButton : UserControl//, qCommon.Interfaces.iFileData
     {
 
         //public string Text { get => lblText.Content.ToString(); set => lblText.Content = value; }
@@ -27,29 +27,102 @@ namespace qControls
 
         public event dClicked Clicked;
 
+        public Brush SelectedBrush { get; set; }
+
         string iconLocation;
         string targetPath;
         string workingDirectory;
 
-        public string Description { get => lblText.Content.ToString(); set => lblText.Content = value; }
-
+        public string Description
+        {
+            get
+            {
+                return (lblText.Content as TextBlock).Text;
+            }
+            set
+            {
+                TextBlock block = (TextBlock)lblText.Content;
+                block.Text = value;
+                lblText.Content = block;
+            }
+        }
+        private event EventHandler IconChangedEvent;
 
         public bool isShortcut { get; set; }
-        public string IconLocation { get => iconLocation; set => iconLocation = value; }
+        public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this,null); } }
         public string TargetPath { get => targetPath; set => targetPath = value; }
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
+
+        private ImageSource imageSource;
+        public ImageSource Image
+        {
+            get
+            {
+                return imageSource;
+            }
+            set
+            {
+                imageSource = value;
+                imgSource.Source = imageSource;
+            }
+        }
+
+        public static ImageSource FolderIcon { get => GetFolderIcon(); }
 
         public qFileButton()
         {
             InitializeComponent();
+            IconChangedEvent += QFileButton_IconChangedEvent; ;
         }
 
 
+        private static ImageSource GetFolderIcon()
+        {
+            var bitmap = Properties.Resources.Folder_icon;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            BitmapImage bImage = new BitmapImage();
+            bImage.BeginInit();
+            bImage.StreamSource = ms;
+            bImage.CacheOption = BitmapCacheOption.OnLoad;
+            bImage.EndInit();
+            bImage.Freeze();
+            
+            
+            bitmap.Dispose();
+            
+            return bImage;
+        }
+
+        private void QFileButton_IconChangedEvent(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(IconLocation))
+                return;
+
+            int location = 0;
+            string fileLocation=IconLocation.Split(',')[0];
+            int.TryParse(IconLocation.Split(',')[1], out location);
+
+            if (fileLocation == "")
+                fileLocation = targetPath;
+
+            ImageSource bmp = qCommon.IconX.GetIconFromFile(fileLocation, location);
+            if (bmp == null)
+            {
+                imageSource = imgSource.Source; // set to the default image
+                return;
+            }
+
+            this.Image = bmp.Clone();
+
+        }
+
         public void Dispose()
         {
-            IconLocation = string.Empty;
-            targetPath = string.Empty;
-            workingDirectory = string.Empty;
+            Image = null;
+
         }
 
         private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
@@ -59,9 +132,9 @@ namespace qControls
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
-            this.Description = shortcut.Description;
-            this.IconLocation = shortcut.IconLocation;
+            this.Description = shortcut.Description;           
             this.TargetPath = shortcut.TargetPath;
+            this.IconLocation = shortcut.IconLocation;
             this.WorkingDirectory = shortcut.WorkingDirectory;
 
             shortcut.Dispose();
@@ -70,6 +143,16 @@ namespace qControls
         public void LoadFile(string file)
         {
 
+        }
+
+        private void Grid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid1.Background = SelectedBrush;
+        }
+
+        private void Grid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid1.Background = Brushes.Transparent;
         }
     }
 }

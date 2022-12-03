@@ -21,13 +21,18 @@ namespace qData
 
             WshShell shell = new WshShell();
             IWshShortcut _shortcut = (IWshShortcut)shell.CreateShortcut(fileName);
-
+            
             shortcut.Description = _shortcut.Description;
             shortcut.IconLocation = _shortcut.IconLocation;
             shortcut.TargetPath = _shortcut.TargetPath;
             shortcut.WorkingDirectory = _shortcut.WorkingDirectory;
-
-
+       
+            if(shortcut.Description == "")
+            {
+                string d = fileName.Substring(fileName.LastIndexOf("\\") + 1);
+                d = d.Substring(0, d.LastIndexOf("."));
+                shortcut.Description = d;
+            }
             shell = null;
             _shortcut = null;
             return shortcut;

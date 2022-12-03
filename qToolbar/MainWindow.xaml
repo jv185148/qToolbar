@@ -6,16 +6,22 @@
         xmlns:local="clr-namespace:qToolbar"
         xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
     <Grid DragEnter="Grid_DragEnter" DragOver="Grid_DragOver" Drop="Grid_Drop" DragLeave="Grid_DragLeave">
         <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
             <MenuItem Header="_File" Height="18" Width="54" >
-                <MenuItem Header="Open..."/>
+                <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
+                <MenuItem Header="_Save..." x:Name="mnuSaveShortcutCollection" Click="mnuSaveShortcutCollection_Click"/>
                 <Separator Height="1" />
                 <MenuItem Header="E_xit" x:Name="mnuExit" Click="MenuExit_Click"/>
             </MenuItem>
+            <MenuItem Header="_Tools" Height="18" Width="100">
+                    <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
+                    <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
+                </MenuItem>
+            
         </Menu>
-        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,20,0,0" >
+        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,20" >
             <b:Interaction.Behaviors>
                 <b:FluidMoveBehavior AppliesTo="Children">
                     <b:FluidMoveBehavior.EaseY>
