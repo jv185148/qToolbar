@@ -20,7 +20,7 @@ namespace qCommon
 
         public static ImageSource GetIconFromFile(string file, int index = 0)
         {
-            BitmapImage bitmap = null;
+            ImageSource imageSource = null;
 
             uint iconCount = ExtractIconEx(file, -1, null, null, 1);
             if (iconCount == 0)
@@ -53,8 +53,8 @@ namespace qCommon
             stream = new System.IO.MemoryStream();
             if (iconsLarge.Length > 0 && (iconsLarge.Length > index || iconsLarge.Length - 1 == index))
             {
-                System.Drawing.Bitmap bmp = iconsLarge[index].ToBitmap();
-                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                System.Drawing.Bitmap bmp = Bitmap.FromHicon(iconsLarge[index].Handle); //iconsLarge[index].ToBitmap();
+                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png );
                 stream.Position = 0;
             }
             else
@@ -64,12 +64,14 @@ namespace qCommon
                    iconsSmall[index].ToBitmap().Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 }
             }
-            bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.StreamSource = stream;
-            bitmap.CacheOption = BitmapCacheOption.Default;
-            bitmap.EndInit();
-            bitmap.Freeze();
+            //bitmap = new BitmapImage();
+            //bitmap.BeginInit();
+            //bitmap.StreamSource = stream;
+            //bitmap.CacheOption = BitmapCacheOption.Default;
+            //bitmap.EndInit();
+            //bitmap.Freeze();
+
+            imageSource = BitmapFrame.Create(stream);
 
             for (int i = iconsLarge.Length - 1; i >= 0; i--)
             {
@@ -86,7 +88,7 @@ namespace qCommon
 
             //stream.Close();
 
-            return bitmap;
+            return imageSource;
         }
     }
 }
