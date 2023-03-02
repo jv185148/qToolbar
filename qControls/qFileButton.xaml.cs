@@ -27,6 +27,10 @@ namespace qControls
 
         public event dClicked Clicked;
 
+
+        public delegate void dRightClicked(object sender);
+        public event dRightClicked RightClicked;
+
         public Brush SelectedBrush { get; set; }
 
         string iconLocation;
@@ -49,7 +53,7 @@ namespace qControls
         private event EventHandler IconChangedEvent;
 
         public bool isShortcut { get; set; }
-        public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this,null); } }
+        public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
         public string TargetPath { get => targetPath; set => targetPath = value; }
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
 
@@ -89,10 +93,10 @@ namespace qControls
             bImage.CacheOption = BitmapCacheOption.OnLoad;
             bImage.EndInit();
             bImage.Freeze();
-            
-            
+
+
             bitmap.Dispose();
-            
+
             return bImage;
         }
 
@@ -102,7 +106,7 @@ namespace qControls
                 return;
 
             int location = 0;
-            string fileLocation=IconLocation.Split(',')[0];
+            string fileLocation = IconLocation.Split(',')[0];
             int.TryParse(IconLocation.Split(',')[1], out location);
 
             if (fileLocation == "")
@@ -114,6 +118,7 @@ namespace qControls
                 imageSource = imgSource.Source; // set to the default image
                 return;
             }
+
 
             this.Image = bmp.Clone();
 
@@ -127,12 +132,15 @@ namespace qControls
 
         private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Clicked?.Invoke(this);
+            if (e.ChangedButton == MouseButton.Left)
+                Clicked?.Invoke(this);
+            else if (e.ChangedButton == MouseButton.Right)
+                RightClicked?.Invoke(this);
         }
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
-            this.Description = shortcut.Description;           
+            this.Description = shortcut.Description;
             this.TargetPath = shortcut.TargetPath;
             this.IconLocation = shortcut.IconLocation;
             this.WorkingDirectory = shortcut.WorkingDirectory;

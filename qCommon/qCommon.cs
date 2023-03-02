@@ -54,7 +54,7 @@ namespace qCommon
             if (iconsLarge.Length > 0 && (iconsLarge.Length > index || iconsLarge.Length - 1 == index))
             {
                 System.Drawing.Bitmap bmp = iconsLarge[index].ToBitmap();
-                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 stream.Position = 0;
             }
             else
