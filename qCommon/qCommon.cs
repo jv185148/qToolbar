@@ -20,7 +20,7 @@ namespace qCommon
 
         public static ImageSource GetIconFromFile(string file, int index = 0)
         {
-            BitmapImage bitmap = null;
+            ImageSource imageSource = null;
 
             uint iconCount = ExtractIconEx(file, -1, null, null, 1);
             if (iconCount == 0)
@@ -64,12 +64,14 @@ namespace qCommon
                    iconsSmall[index].ToBitmap().Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 }
             }
-            bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.StreamSource = stream;
-            bitmap.CacheOption = BitmapCacheOption.Default;
-            bitmap.EndInit();
-            bitmap.Freeze();
+            //bitmap = new BitmapImage();
+            //bitmap.BeginInit();
+            //bitmap.StreamSource = stream;
+            //bitmap.CacheOption = BitmapCacheOption.Default;
+            //bitmap.EndInit();
+            //bitmap.Freeze();
+
+            imageSource = BitmapFrame.Create(stream);
 
             for (int i = iconsLarge.Length - 1; i >= 0; i--)
             {
@@ -86,7 +88,7 @@ namespace qCommon
 
             //stream.Close();
 
-            return bitmap;
+            return imageSource;
         }
     }
 }
