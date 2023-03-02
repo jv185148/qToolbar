@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,6 +38,7 @@ namespace qToolbar
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.main = new qMain.Main(this);
             main.Load();
         }
@@ -51,7 +53,7 @@ namespace qToolbar
 
         private void mnuClearItems_Click(object sender, RoutedEventArgs e)
         {
-            this.main.Clear();
+            this.main.Clear(); 
         }
 
         private void mnuSettings_Click(object sender, RoutedEventArgs e)

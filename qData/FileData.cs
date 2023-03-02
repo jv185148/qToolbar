@@ -67,9 +67,10 @@ namespace qData
         private string getBase64(ImageSource image)
         {
             byte[] buffer;
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.QualityLevel = 100;
-
+            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new PngBitmapEncoder();
+            //encoder.QualityLevel = 100;
+           
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image));
             encoder.Save(ms);

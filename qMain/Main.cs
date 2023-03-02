@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace qMain
@@ -24,7 +25,7 @@ namespace qMain
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);
 
-                return path;
+                return path.Replace("\\\\","\\");
             }
         }
         public Main(qCommon.Interfaces.iMain child)
@@ -45,6 +46,7 @@ namespace qMain
                 child.iGridArea.Children.Add(button);
 
                 button.Clicked += Button_Clicked;
+                button.RightClicked += Button_RightClicked;
             }
 
 
@@ -117,6 +119,7 @@ namespace qMain
                 child.iGridArea.Children.Add(button);
 
                 button.Clicked += Button_Clicked;
+                button.RightClicked += Button_RightClicked;
 
                 button.SelectedBrush = qData.SettingsFile.SelectedTileColor;
 
@@ -147,6 +150,12 @@ namespace qMain
             Load();
         }
 
+        public void DeleteButton(qControls.qFileButton button)
+        {
+            child.iGridArea.Children.Remove((UIElement)button);
+            button.Dispose();
+        }
+
         private void Button_Clicked(object sender)
         {
 
@@ -155,6 +164,42 @@ namespace qMain
             Execute(button);
 
         }
+
+        public void Button_RightClicked(object sender)
+        {
+            //MessageBox.Show("Button was right clicked");
+            // DeleteButton((qControls.qFileButton)sender);
+            qControls.qFileButton button = (qControls.qFileButton)sender;
+
+            ContextMenu cm = new ContextMenu();
+            MenuItem delete = new MenuItem() { Header = "Delete" };
+            delete.Click += ((object dSender, RoutedEventArgs e) =>
+            {
+                DeleteButton(button);
+            });
+            
+
+
+            MenuItem rename = new MenuItem() { Header = "Rename" };
+            rename.Click+=((object rSender, RoutedEventArgs e) =>
+            {
+                qControls.InputBox input = new InputBox();
+                input.Heading = "Enter a new name for the shortcut";
+                input.Text = button.Description;
+                if(input.ShowDialog() == true)
+                {
+                    button.Description = input.Text;
+                }
+            });
+
+
+            cm.Items.Add(rename);
+            cm.Items.Add(delete);
+
+            cm.PlacementTarget = (UIElement)sender;
+            cm.IsOpen = true;
+        }
+
 
         private void Execute(qFileButton button)
         {
@@ -203,7 +248,8 @@ namespace qMain
             dlg.FilterIndex = 0;
             dlg.InitialDirectory = collectionsPath;
 
-            dlg.FileOk += ((object sender,System.ComponentModel.CancelEventArgs e)=> {
+            dlg.FileOk += ((object sender, System.ComponentModel.CancelEventArgs e) =>
+            {
                 string newFile = dlg.FileName;
                 string oldFile = appPath + "\\fileData.qtb";
 
@@ -220,7 +266,7 @@ namespace qMain
             dlg.Filter = "qToolbar CollectionFiles *.qtb|*.qtb";
             dlg.FilterIndex = 0;
 
-            dlg.InitialDirectory = collectionsPath;
+            dlg.InitialDirectory = collectionsPath; //collectionsPath.Replace("\\\\","\\");
 
             if (dlg.ShowDialog() == true)
             {

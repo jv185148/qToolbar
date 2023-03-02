@@ -109,6 +109,9 @@ namespace qData
             key.Close();
             key = Registry.ClassesRoot.OpenSubKey(appName + "\\shell\\open\\command");
 
+            if (key == null) 
+                return null;
+
             value = key.GetValue("").ToString();
 
             if (value.Contains("\""))

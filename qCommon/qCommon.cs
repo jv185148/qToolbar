@@ -53,8 +53,8 @@ namespace qCommon
             stream = new System.IO.MemoryStream();
             if (iconsLarge.Length > 0 && (iconsLarge.Length > index || iconsLarge.Length - 1 == index))
             {
-                System.Drawing.Bitmap bmp = Bitmap.FromHicon(iconsLarge[index].Handle); //iconsLarge[index].ToBitmap();
-                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png );
+                System.Drawing.Bitmap bmp = iconsLarge[index].ToBitmap();
+                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 stream.Position = 0;
             }
             else
