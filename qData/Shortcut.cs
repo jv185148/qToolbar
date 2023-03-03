@@ -1,6 +1,7 @@
 ﻿using IWshRuntimeLibrary;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,36 @@ namespace qData
             _shortcut = null;
             return shortcut;
 
+        }
+
+        private static string GetSteamIconPath(string file)
+        {
+            uint appId = GetSteamAppID(file);
+            string manifestPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steam", "steamapps", "appmanifest_" + appId.ToString() + ".acf");
+
+            // read the contents of the appmanifest file
+            string[] lines = System.IO.File.ReadAllLines(manifestPath);
+
+            // find the line that contains the icon file name
+            string iconLine = Array.Find(lines, line => line.Contains("\"icon\""));
+
+            // extract the icon file name from the line
+            string[] iconParts = iconLine.Split('"');
+            string iconName = iconParts[3];
+
+            // construct the path to the icon file
+            string iconPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Steam", "steamapps", "appmanifest_" + appId.ToString() + ".acf");
+            iconPath = Path.GetDirectoryName(iconPath) + "\\" + iconName + ".ico";
+
+            // return the icon file path
+            return iconPath;
+        }
+
+        private static uint GetSteamAppID(string file)
+        {
+            uint id = 1;
+
+            return id;
         }
 
         public class DesktopShortcut : qCommon.Interfaces.iShortcut

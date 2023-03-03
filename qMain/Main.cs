@@ -127,7 +127,14 @@ namespace qMain
             }
         }
 
+        private bool IsSteamApp(string file)
+        {
+            bool result = false;
 
+            result = file.StartsWith("Steam");
+
+            return result;
+        }
 
 
         public void Clear()
