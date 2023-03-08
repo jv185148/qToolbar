@@ -48,7 +48,7 @@
     <Compile Include="Interfaces\iMain.cs" />
     <Compile Include="Interfaces\iShortcut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="qCommon.cs" />
+    <Compile Include="Common.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

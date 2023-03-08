@@ -90,6 +90,8 @@ namespace qMain
                 if (file.Contains('.'))
                     ext = file.Substring(file.LastIndexOf('.'));
 
+                bool isSteam = q.Common.IsSteamApp(file);
+
                 if (ext.ToLower().Equals(".lnk"))
                 {
                     button.isShortcut = true;
@@ -109,10 +111,17 @@ namespace qMain
                         case "":
                             button.Image = qControls.qFileButton.FolderIcon;
                             break;
-
                         default:
-                            button.IconLocation = qData.Icons.GetAssociatedProgramName(ext) + ",0";
+                            string iconPath = "";
+                            if (isSteam)
+                                iconPath= q.Common.GetSteamGameIcon(file);
+                            else
+                                iconPath = qData.Icons.GetAssociatedProgramName(ext);
+                            button.IconLocation = iconPath + ",0";
+                            button.IsSteamApp = isSteam;
                             break;
+
+                            
                     }
                 }
 
@@ -127,7 +136,14 @@ namespace qMain
             }
         }
 
+        private bool IsSteamApp(string file)
+        {
+            bool result = false;
 
+            result = file.StartsWith("Steam");
+
+            return result;
+        }
 
 
         public void Clear()

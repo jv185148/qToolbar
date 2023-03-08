@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
-    <Grid DragEnter="Grid_DragEnter" >
+    <Grid DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
         <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
             <MenuItem Header="_File" Height="18" Width="54" >
                 <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
@@ -21,7 +21,7 @@
                 </MenuItem>
             
         </Menu>
-        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,20" >
+        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
             <b:Interaction.Behaviors>
                 <b:FluidMoveBehavior AppliesTo="Children">
                     <b:FluidMoveBehavior.EaseY>

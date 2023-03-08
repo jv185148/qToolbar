@@ -1,6 +1,8 @@
 ﻿using IWshRuntimeLibrary;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +39,13 @@ namespace qData
             _shortcut = null;
             return shortcut;
 
+        }
+
+        private static uint GetSteamAppID(string file)
+        {
+            uint id = 1;
+
+            return id;
         }
 
         public class DesktopShortcut : qCommon.Interfaces.iShortcut

@@ -12,6 +12,7 @@
                 Content="File Name Goes Here....."
             </TextBlock>
         </Label>
+        <Image Name="imgSteam" Visibility="Hidden" HorizontalAlignment="Left" Height="30" Margin="88,88,0,0" VerticalAlignment="Top" Width="30"/>
 
     </Grid>
 </UserControl>
