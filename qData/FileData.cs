@@ -54,6 +54,7 @@ namespace qData
                 buttonData.AppendLine(button.IconLocation);
                 buttonData.AppendLine(button.TargetPath);
                 buttonData.AppendLine(button.WorkingDirectory);
+                buttonData.AppendLine(button.IsSteamApp.ToString());
                 buttonData.AppendLine(getBase64(button.Image));
                 buttonData.AppendLine(); buttonData.AppendLine();
 
@@ -129,8 +130,9 @@ namespace qData
 
                     button.TargetPath = lines[4];
                     button.WorkingDirectory = lines[5];
+                    button.IsSteamApp = bool.Parse(lines[6]);
                     button.IconLocation = lines[3];
-                    button.Image = getImageSource(lines[6]);
+                    button.Image = getImageSource(lines[7]);
 
                     button.SelectedBrush = qData.SettingsFile.SelectedTileColor;
                     buttons.Add(button);

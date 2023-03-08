@@ -36,6 +36,7 @@ namespace qControls
         string iconLocation;
         string targetPath;
         string workingDirectory;
+        bool isSteamApp;
 
         public string Description
         {
@@ -56,7 +57,8 @@ namespace qControls
         public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
         public string TargetPath { get => targetPath; set => targetPath = value; }
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
-
+        public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
+        
         private ImageSource imageSource;
         public ImageSource Image
         {
@@ -72,6 +74,18 @@ namespace qControls
         }
 
         public static ImageSource FolderIcon { get => GetFolderIcon(); }
+
+        internal void SetSteam()
+        {
+            if (!isSteamApp)
+            {
+                imgSteam.Visibility = Visibility.Hidden;
+                return;
+            }
+
+            imgSteam.Source = q.Common.GetSteamIcon().Clone();
+            imgSteam.Visibility = Visibility.Visible;
+        }
 
         public qFileButton()
         {
@@ -144,6 +158,7 @@ namespace qControls
             this.TargetPath = shortcut.TargetPath;
             this.IconLocation = shortcut.IconLocation;
             this.WorkingDirectory = shortcut.WorkingDirectory;
+            this.IsSteamApp = false;
 
             shortcut.Dispose();
         }

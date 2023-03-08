@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace q
             }
         }
 
-        public static string GetSteamIcon(string file)
+        public static string GetSteamGameIcon(string file)
         {
             string[] lines = System.IO.File.ReadAllLines(file);
             string iconPath = Array.Find(lines, l => l.StartsWith("IconFile="));
@@ -102,6 +103,29 @@ namespace q
 
             Array.Clear(lines, 0, lines.Length);
             return iconPath;
+        }
+
+        private static volatile ImageSource SteamIcon;
+        private static bool steamIconSet = false;
+
+        public static ImageSource GetSteamIcon()
+        {
+            if (!steamIconSet)
+            {
+                RegistryKey uninstallKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall");
+                if (uninstallKey == null)
+                    uninstallKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall");
+
+                RegistryKey key = uninstallKey.OpenSubKey("Steam");
+                string path = key.GetValue("DisplayIcon").ToString();
+                path = path.Substring(0, path.LastIndexOf("\\")); // This is where Steam is installed;
+
+                SteamIcon = IconX.GetIconFromFile(path + "\\Steam.exe");
+                steamIconSet = true;
+            }
+
+
+            return SteamIcon;
         }
 
         public static bool IsSteamApp(string file)

@@ -112,11 +112,16 @@ namespace qMain
                             button.Image = qControls.qFileButton.FolderIcon;
                             break;
                         default:
+                            string iconPath = "";
                             if (isSteam)
-                                button.IconLocation = q.Common.GetSteamIcon(file)+",0";
+                                iconPath= q.Common.GetSteamGameIcon(file);
                             else
-                                button.IconLocation = qData.Icons.GetAssociatedProgramName(ext) + ",0";
+                                iconPath = qData.Icons.GetAssociatedProgramName(ext);
+                            button.IconLocation = iconPath + ",0";
+                            button.IsSteamApp = isSteam;
                             break;
+
+                            
                     }
                 }
 
