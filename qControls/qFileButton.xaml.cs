@@ -112,7 +112,7 @@ namespace qControls
             if (fileLocation == "")
                 fileLocation = targetPath;
 
-            ImageSource bmp = qCommon.IconX.GetIconFromFile(fileLocation, location);
+            ImageSource bmp = q.Common.IconX.GetIconFromFile(fileLocation, location);
             if (bmp == null)
             {
                 imageSource = imgSource.Source; // set to the default image

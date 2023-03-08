@@ -102,9 +102,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\qCommon\qCommon.csproj">
+    <ProjectReference Include="..\qCommon\q.csproj">
       <Project>{df9947d7-c0c2-43c2-a72f-5def45595218}</Project>
-      <Name>qCommon</Name>
+      <Name>q</Name>
     </ProjectReference>
     <ProjectReference Include="..\qControls\qControls.csproj">
       <Project>{d8a5201e-ce66-4689-9c28-437b6f0f72a0}</Project>

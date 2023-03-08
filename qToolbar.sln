@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qMain", "qMain\qMain.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qControls", "qControls\qControls.csproj", "{D8A5201E-CE66-4689-9C28-437B6F0F72A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qCommon", "qCommon\qCommon.csproj", "{DF9947D7-C0C2-43C2-A72F-5DEF45595218}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "q", "qCommon\q.csproj", "{DF9947D7-C0C2-43C2-A72F-5DEF45595218}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qData", "qData\qData.csproj", "{884B42AC-BD6F-4202-9FBD-ABEA4365686E}"
 EndProject

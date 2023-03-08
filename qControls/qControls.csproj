@@ -92,9 +92,9 @@
     <Resource Include="Game Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\qCommon\qCommon.csproj">
+    <ProjectReference Include="..\qCommon\q.csproj">
       <Project>{df9947d7-c0c2-43c2-a72f-5def45595218}</Project>
-      <Name>qCommon</Name>
+      <Name>q</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
