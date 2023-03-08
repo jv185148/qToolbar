@@ -21,19 +21,20 @@
                 </MenuItem>
             
         </Menu>
-        <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
-            <b:Interaction.Behaviors>
-                <b:FluidMoveBehavior AppliesTo="Children">
-                    <b:FluidMoveBehavior.EaseY>
-                        <CubicEase EasingMode="EaseOut"/>
-                    </b:FluidMoveBehavior.EaseY>
-                    <b:FluidMoveBehavior.EaseX>
-                        <BounceEase EasingMode="EaseOut" Bounciness="5" Bounces="5"/>
-                    </b:FluidMoveBehavior.EaseX>
-                </b:FluidMoveBehavior>
-            </b:Interaction.Behaviors>
-        </WrapPanel>
-
+        <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                <b:Interaction.Behaviors>
+                    <b:FluidMoveBehavior AppliesTo="Children">
+                        <b:FluidMoveBehavior.EaseY>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </b:FluidMoveBehavior.EaseY>
+                        <b:FluidMoveBehavior.EaseX>
+                            <BounceEase EasingMode="EaseOut" Bounciness="5" Bounces="5"/>
+                        </b:FluidMoveBehavior.EaseX>
+                    </b:FluidMoveBehavior>
+                </b:Interaction.Behaviors>
+            </WrapPanel>
+        </ScrollViewer>
 
     </Grid>
 </Window>
