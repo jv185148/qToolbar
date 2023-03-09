@@ -7,20 +7,8 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
+
     <Grid DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
-        <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
-            <MenuItem Header="_File" Height="18" Width="54" >
-                <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
-                <MenuItem Header="_Save..." x:Name="mnuSaveShortcutCollection" Click="mnuSaveShortcutCollection_Click"/>
-                <Separator Height="1" />
-                <MenuItem Header="E_xit" x:Name="mnuExit" Click="MenuExit_Click"/>
-            </MenuItem>
-            <MenuItem Header="_Tools" Height="18" Width="100">
-                    <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
-                    <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
-                </MenuItem>
-            
-        </Menu>
         <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <b:Interaction.Behaviors>
@@ -35,6 +23,18 @@
                 </b:Interaction.Behaviors>
             </WrapPanel>
         </ScrollViewer>
+        <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
+            <MenuItem Header="_File" Height="18" Width="54" >
+                <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
+                <MenuItem Header="_Save..." x:Name="mnuSaveShortcutCollection" Click="mnuSaveShortcutCollection_Click"/>
+                <Separator Height="1" />
+                <MenuItem Header="E_xit" x:Name="mnuExit" Click="MenuExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Tools" Height="18" Width="100">
+                <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
+                <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
+            </MenuItem>
 
+        </Menu>
     </Grid>
 </Window>
