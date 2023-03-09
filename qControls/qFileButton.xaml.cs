@@ -120,7 +120,9 @@ namespace qControls
                 return;
 
             int location = 0;
-            string fileLocation = IconLocation.Split(',')[0];
+            //string fileLocation = IconLocation.Split(',')[0];    //<=this causes issues. Split off last ','
+            string fileLocation = iconLocation.Substring(0, iconLocation.LastIndexOf(','));
+
             int.TryParse(IconLocation.Split(',')[1], out location);
 
             if (fileLocation == "")
