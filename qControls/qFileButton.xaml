@@ -13,6 +13,6 @@
             </TextBlock>
         </Label>
         <Image Name="imgSteam" Visibility="Hidden" HorizontalAlignment="Left" Height="30" Margin="88,88,0,0" VerticalAlignment="Top" Width="30"/>
-
+        <Image Name="imgAdmin" Visibility="Hidden" HorizontalAlignment="Left" Height="30" Margin="2,88,0,0" VerticalAlignment="Top" Width="30"/>
     </Grid>
 </UserControl>

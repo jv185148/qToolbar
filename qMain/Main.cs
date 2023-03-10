@@ -106,6 +106,7 @@ namespace qMain
                     {
                         case ".exe":
                             button.WorkingDirectory = file.Substring(0, file.LastIndexOf("\\"));
+                            button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
                             break;
 
                         case "":

@@ -37,6 +37,7 @@ namespace qControls
         string targetPath;
         string workingDirectory;
         bool isSteamApp;
+        bool runAdmin;
 
         public string Description
         {
@@ -58,7 +59,8 @@ namespace qControls
         public string TargetPath { get => targetPath; set => targetPath = value; }
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
         public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
-        
+
+        public bool RunAdmin { get => runAdmin; set { runAdmin = value; SetRunAdmin(); } }
         private ImageSource imageSource;
         public ImageSource Image
         {
@@ -87,10 +89,38 @@ namespace qControls
             imgSteam.Visibility = Visibility.Visible;
         }
 
+        internal void SetRunAdmin()
+        {
+            if (RunAdmin)
+                loadAdminImage();
+            else
+                imgAdmin.Visibility = Visibility.Hidden;
+        }
+        private void loadAdminImage()
+        {
+            var bitmap = Properties.Resources.adminShield;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            BitmapImage bImage = new BitmapImage();
+            bImage.BeginInit();
+            bImage.StreamSource = ms;
+            bImage.CacheOption = BitmapCacheOption.OnLoad;
+            bImage.EndInit();
+            bImage.Freeze();
+
+
+            bitmap.Dispose();
+
+            imgAdmin.Source = bImage;
+            imgAdmin.Visibility = Visibility.Visible;
+        }
+
         public qFileButton()
         {
             InitializeComponent();
-            IconChangedEvent += QFileButton_IconChangedEvent; ;
+            IconChangedEvent += QFileButton_IconChangedEvent; 
         }
 
 
@@ -162,9 +192,11 @@ namespace qControls
             this.WorkingDirectory = shortcut.WorkingDirectory;
             this.IsSteamApp = false;
 
+            this.RunAdmin = q.Common.GetAdminFlag(targetPath);
+
             shortcut.Dispose();
         }
-
+        
         public void LoadFile(string file)
         {
 

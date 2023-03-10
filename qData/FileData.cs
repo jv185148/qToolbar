@@ -133,7 +133,7 @@ namespace qData
                     button.IsSteamApp = bool.Parse(lines[6]);
                     button.IconLocation = lines[3];
                     button.Image = getImageSource(lines[7]);
-
+                    button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
                     button.SelectedBrush = qData.SettingsFile.SelectedTileColor;
                     buttons.Add(button);
                 }
