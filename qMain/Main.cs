@@ -166,7 +166,7 @@ namespace qMain
             Load();
         }
 
-        public void DeleteButton(qControls.qFileButton button)
+        public void RemoveButton(qControls.qFileButton button)
         {
             child.iGridArea.Children.Remove((UIElement)button);
             button.Dispose();
@@ -184,14 +184,14 @@ namespace qMain
         public void Button_RightClicked(object sender)
         {
             //MessageBox.Show("Button was right clicked");
-            // DeleteButton((qControls.qFileButton)sender);
+
             qControls.qFileButton button = (qControls.qFileButton)sender;
 
             ContextMenu cm = new ContextMenu();
-            MenuItem delete = new MenuItem() { Header = "Delete" };
-            delete.Click += ((object dSender, RoutedEventArgs e) =>
+            MenuItem remove = new MenuItem() { Header = "Remove" };
+            remove.Click += ((object dSender, RoutedEventArgs e) =>
             {
-                DeleteButton(button);
+                RemoveButton(button);
             });
             
 
@@ -208,9 +208,10 @@ namespace qMain
                 }
             });
 
-
+            
             cm.Items.Add(rename);
-            cm.Items.Add(delete);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(remove);
 
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
