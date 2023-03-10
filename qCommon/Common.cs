@@ -151,6 +151,19 @@ namespace q
             return res;
 
         }
+
+        public static bool GetAdminFlag(string file)
+        {
+            bool result = false;
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers");
+            if (key.GetValueNames().Contains(file))
+            {
+                result = key.GetValue(file).ToString().Contains("RUNASADMIN");
+            }
+            key.Close();
+            key.Dispose();
+            return result;
+        }
     }
 }
 
