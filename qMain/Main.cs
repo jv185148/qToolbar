@@ -25,7 +25,7 @@ namespace qMain
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);
 
-                return path.Replace("\\\\","\\");
+                return path.Replace("\\\\", "\\");
             }
         }
         public Main(qCommon.Interfaces.iMain child)
@@ -115,14 +115,14 @@ namespace qMain
                         default:
                             string iconPath = "";
                             if (isSteam)
-                                iconPath= q.Common.GetSteamGameIcon(file);
+                                iconPath = q.Common.GetSteamGameIcon(file);
                             else
                                 iconPath = qData.Icons.GetAssociatedProgramName(ext);
                             button.IconLocation = iconPath + ",0";
                             button.IsSteamApp = isSteam;
                             break;
 
-                            
+
                     }
                 }
 
@@ -189,27 +189,34 @@ namespace qMain
             qControls.qFileButton button = (qControls.qFileButton)sender;
 
             ContextMenu cm = new ContextMenu();
+
+            MenuItem admin = new MenuItem() { Header = "Toggle Run as Administrator" };
+            admin.Click += ((object aSender, RoutedEventArgs e) =>
+            {
+                button.RunAdmin = q.Common.SetAdminFlag(button.TargetPath);
+            });
+
             MenuItem remove = new MenuItem() { Header = "Remove" };
             remove.Click += ((object dSender, RoutedEventArgs e) =>
             {
                 RemoveButton(button);
             });
-            
+
 
 
             MenuItem rename = new MenuItem() { Header = "Rename" };
-            rename.Click+=((object rSender, RoutedEventArgs e) =>
-            {
-                qControls.InputBox input = new InputBox();
-                input.Heading = "Enter a new name for the shortcut";
-                input.Text = button.Description;
-                if(input.ShowDialog() == true)
-                {
-                    button.Description = input.Text;
-                }
-            });
+            rename.Click += ((object rSender, RoutedEventArgs e) =>
+              {
+                  qControls.InputBox input = new InputBox();
+                  input.Heading = "Enter a new name for the shortcut";
+                  input.Text = button.Description;
+                  if (input.ShowDialog() == true)
+                  {
+                      button.Description = input.Text;
+                  }
+              });
 
-            
+            cm.Items.Add(admin);
             cm.Items.Add(rename);
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
