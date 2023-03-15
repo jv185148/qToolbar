@@ -9,6 +9,7 @@ namespace qCommon.Interfaces
     public interface iMain
     {
         System.Windows.Controls.WrapPanel iGridArea { get; }
+        iSettings iSettingsForm { get; }
 
         void Dispose();
     }

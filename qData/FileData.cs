@@ -105,8 +105,12 @@ namespace qData
         {
             List<qControls.qFileButton> buttons = new List<qControls.qFileButton>();
 
+            qData.SettingsFile settings = new SettingsFile();
+
             try
             {
+                settings.Load();
+
                 string[] data = Encoding.UTF8.GetString(buffer).Split(new string[] { "\r\n\r\n\r\n" }, StringSplitOptions.None);
                 for (int i = 0; i <= data.Length - 1; i++)
                 {
@@ -134,13 +138,19 @@ namespace qData
                     button.IconLocation = lines[3];
                     button.Image = getImageSource(lines[7]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
-                    button.SelectedBrush = qData.SettingsFile.SelectedTileColor;
+
+                    button.SelectedBrush = settings.SelectedTileColor;
+                    button.TextForeground = settings.ForegroundColor;
+
+                  
+
                     buttons.Add(button);
                 }
                 return buttons.ToArray();
             }
             finally
             {
+                settings.Dispose();
                 buttons.Clear();
             }
         }

@@ -24,6 +24,28 @@ namespace qToolbar
     {
         private Main main;
 
+        frmSettings fSettings;
+        #region Settings.
+        public qCommon.Interfaces.iSettings iSettingsForm
+        {
+            get
+            {
+                if (fSettings == null)
+                { fSettings = new frmSettings();
+
+                    fSettings.Closed += FSettings_Closed;
+                }
+
+                return fSettings;
+            }
+        }
+
+        private void FSettings_Closed(object sender, EventArgs e)
+        {
+            fSettings = null;
+        }
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -58,7 +80,7 @@ namespace qToolbar
 
         private void mnuSettings_Click(object sender, RoutedEventArgs e)
         {
-
+            main.ShowSettings();
         }
 
         private void mnuOpenShortcutCollection_Click(object sender, RoutedEventArgs e)

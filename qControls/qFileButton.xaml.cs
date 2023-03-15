@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace qControls
         bool isSteamApp;
         bool runAdmin;
 
+        [Category("qToobar")]
         public string Description
         {
             get
@@ -56,12 +58,17 @@ namespace qControls
 
         public bool isShortcut { get; set; }
         public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
+        [Category("qToolbar")]
         public string TargetPath { get => targetPath; set => targetPath = value; }
+        [Category("qToolbar")]
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
+        [Category("qToolbar")]
         public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
 
         public bool RunAdmin { get => runAdmin; set { runAdmin = value; SetRunAdmin(); } }
+        
         private ImageSource imageSource;
+        [Category("qToolbar")]
         public ImageSource Image
         {
             get
@@ -74,7 +81,19 @@ namespace qControls
                 imgSource.Source = imageSource;
             }
         }
-
+        
+        [Category("qToolbar")]
+        public Brush TextForeground
+        {
+            get
+            {
+                return lblText.Foreground;
+            }
+            set
+            {
+                lblText.Foreground = value;
+            }
+        }
         public static ImageSource FolderIcon { get => GetFolderIcon(); }
 
         internal void SetSteam()
