@@ -104,7 +104,7 @@ namespace qMain
             {
                 button.SelectedBrush = settings.SelectedTileColor;
                 button.TextForeground = settings.ForegroundColor;
-                button.SingleClickRun = settings.RunWithSingleClick;
+                button.RunWithSingleClick = settings.RunWithSingleClick;
             }
             settings.Dispose();
         }

@@ -141,7 +141,7 @@ namespace qData
 
                     button.SelectedBrush = settings.SelectedTileColor;
                     button.TextForeground = settings.ForegroundColor;
-
+                    button.RunWithSingleClick = settings.RunWithSingleClick;
                   
 
                     buttons.Add(button);
