@@ -11,23 +11,27 @@
         <TabControl Margin="0,0,9.6,57.4">
             <TabItem Header="Appearance &amp; Behaviour">
                 <Grid Background="#FFE5E5E5" Margin="0,0,-1.6,-1.2">
-                    <GroupBox Header="Run an application with" HorizontalAlignment="Left" Height="78" Margin="10,255,0,0" VerticalAlignment="Top" Width="214">
+                    <GroupBox Header="Run an application with" HorizontalAlignment="Left" Height="78" Margin="10,255,0,0" VerticalAlignment="Top" Width="315">
                         <ItemsControl>
-                            <RadioButton x:Name="radSingle" Content="Singe click on an item" HorizontalAlignment="Left" Margin="8,5,0,0" VerticalAlignment="Top" Height="19" />
-                            <RadioButton x:Name ="radDouble" Content="Double click on an item" HorizontalAlignment="Left" Margin="8,5,0,0" VerticalAlignment="Top" Height="19"/>
+                            <RadioButton x:Name="radSingle" HorizontalAlignment="Left" Margin="8,5,0,0" VerticalAlignment="Top" Height="19" >
+                                <TextBlock>Singe click on an item</TextBlock>
+                            </RadioButton>
+                            <RadioButton x:Name ="radDouble" HorizontalAlignment="Left" Margin="8,5,0,0" VerticalAlignment="Top" Height="19">
+                                <TextBlock>Double click on an item</TextBlock>
+                            </RadioButton>
                         </ItemsControl>
                     </GroupBox>
                     <GroupBox Header="Button Colors" HorizontalAlignment="Left" Height="240" Margin="10,10,0,0" VerticalAlignment="Top" Width="378">
                         <ItemsControl>
 
-                            <Button Name="btnForecolor" Content="Fore Color" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="44" Click="btnColor">
+                            <Button Name="btnForecolor" Content="Text Color" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="44" Click="btnForegroundColor">
                             </Button>
-                            <Button Name="btnSelectColor" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="45" Click="btnColor">
+                            <Button Name="btnSelectColor" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="45" Click="btnSelectColor_Click">
                                 <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">
-                                    Button Selection Color
+                                    Selection Color
                                 </TextBlock>
                             </Button>
-                            <qControls:qFileButton HorizontalAlignment="Left" Margin="10,-60,0,0" VerticalAlignment="Top" TargetPath="" WorkingDirectory="" Description="asd" Height="145" Width="142"/>
+                            <qControls:qFileButton Name="btnGame" HorizontalAlignment="Left" Margin="10,-60,0,0" VerticalAlignment="Top" TargetPath="" WorkingDirectory="" Description="asd" Height="145" Width="142"/>
 
                         </ItemsControl>
                     </GroupBox>

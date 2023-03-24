@@ -6,5 +6,7 @@ namespace qCommon.Interfaces
     {
          Brush TextColor { get; set; }
          Brush SelectColor { get; set; }
+
+        bool RunWithSingleClick { get; set; }
     }
 }

@@ -88,11 +88,26 @@ namespace qMain
                 qData.SettingsFile settings = new qData.SettingsFile();
                 settings.ForegroundColor = ((qCommon.Interfaces.iSettings)window).TextColor;
                 settings.SelectedTileColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
-
+                settings.RunWithSingleClick = ((qCommon.Interfaces.iSettings)window).RunWithSingleClick;
                 settings.Save();
+                settings.Dispose();
+
+                LoadSettings();
             }
         }
 
+        private void LoadSettings()
+        {
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+            foreach (var button in getButtons())
+            {
+                button.SelectedBrush = settings.SelectedTileColor;
+                button.TextForeground = settings.ForegroundColor;
+                button.SingleClickRun = settings.RunWithSingleClick;
+            }
+            settings.Dispose();
+        }
         public void AddFiles(string[] data)
         {
             qData.SettingsFile settings = new qData.SettingsFile();

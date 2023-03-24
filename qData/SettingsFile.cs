@@ -15,39 +15,46 @@ namespace qData
         public override Field[] FieldData => fields;
 
 
-        Field fTileColor;
+        Field fSelectColor;
         Field fForeground;
+        Field fRunWithSingleClick;
 
         public  Brush SelectedTileColor { get; set; }
 
         public  Brush ForegroundColor { get; set; }
-
+        public bool RunWithSingleClick { get; set; }
 
         public SettingsFile()
         {
-            fTileColor = new Field() { Title = "TileColor" };
+            fSelectColor = new Field() { Title = "TileColor" };
             fForeground = new Field() { Title = "Fourground" };
+            fRunWithSingleClick = new Field() { Title = "RunWithSingleClick" };
 
-            fields = new Field[2];
-            fields[0] = fTileColor;
+            fields = new Field[3];
+            fields[0] = fSelectColor;
             fields[1] = fForeground;
-           
+            fields[2] = fRunWithSingleClick;
         }
 
         protected override void PrepData()
         {
-            fTileColor.Data = SelectedTileColor.ToString();
+            fSelectColor.Data = SelectedTileColor.ToString();
             fForeground.Data = ForegroundColor.ToString();
+            fRunWithSingleClick.Data = RunWithSingleClick.ToString();
         }
 
         protected override void LoadData()
         {
             BrushConverter bc = new BrushConverter();
-            Brush b=(Brush) bc.ConvertFromString(fTileColor.Data);
+            Brush b=(Brush) bc.ConvertFromString(fSelectColor.Data);
             SelectedTileColor = b.Clone();
 
             b = (Brush)bc.ConvertFromString(fForeground.Data);
             ForegroundColor = b.Clone();
+
+            bool singleClick = false;
+            bool.TryParse(fRunWithSingleClick.Data, out singleClick);
+            RunWithSingleClick = singleClick;
 
             b = null;
             bc = null;
@@ -57,6 +64,7 @@ namespace qData
         {
             ForegroundColor= Brushes.Black;
             SelectedTileColor = Brushes.SteelBlue;
+            RunWithSingleClick = true;
         }
 
         protected override void childDispose()

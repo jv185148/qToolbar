@@ -32,7 +32,21 @@ namespace qControls
         public delegate void dRightClicked(object sender);
         public event dRightClicked RightClicked;
 
-        public Brush SelectedBrush { get; set; }
+        private Brush _foreground;
+        [Category("qToolbar")]
+        public Brush TextForeground { get => lblText.Foreground; set => lblText.Foreground = value; }
+
+        private Brush _selectedColor;
+        public Brush SelectedBrush
+        {
+            get => _selectedColor; set
+            {
+                _selectedColor = value;
+                if (ForceSelected)
+                    Grid_MouseEnter(null, null);
+            }
+        }
+
 
         string iconLocation;
         string targetPath;
@@ -40,7 +54,7 @@ namespace qControls
         bool isSteamApp;
         bool runAdmin;
 
-        [Category("qToobar")]
+        [Category("qToolbar")]
         public string Description
         {
             get
@@ -66,7 +80,7 @@ namespace qControls
         public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
 
         public bool RunAdmin { get => runAdmin; set { runAdmin = value; SetRunAdmin(); } }
-        
+
         private ImageSource imageSource;
         [Category("qToolbar")]
         public ImageSource Image
@@ -81,20 +95,24 @@ namespace qControls
                 imgSource.Source = imageSource;
             }
         }
-        
+
+        public static ImageSource FolderIcon { get => GetFolderIcon(); }
+
         [Category("qToolbar")]
-        public Brush TextForeground
+        public bool SingleClickRun { get; set; }
+
+        private bool _forceSeleced;
+
+        [Category("qToolbar")]
+        public bool ForceSelected
         {
-            get
-            {
-                return lblText.Foreground;
-            }
+            get => _forceSeleced;
             set
             {
-                lblText.Foreground = value;
+                if (value) Grid_MouseEnter(null, null);
+                _forceSeleced = value;
             }
         }
-        public static ImageSource FolderIcon { get => GetFolderIcon(); }
 
         internal void SetSteam()
         {
@@ -139,7 +157,7 @@ namespace qControls
         public qFileButton()
         {
             InitializeComponent();
-            IconChangedEvent += QFileButton_IconChangedEvent; 
+            IconChangedEvent += QFileButton_IconChangedEvent;
         }
 
 
@@ -215,7 +233,7 @@ namespace qControls
 
             shortcut.Dispose();
         }
-        
+
         public void LoadFile(string file)
         {
 
@@ -228,7 +246,8 @@ namespace qControls
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            Grid1.Background = Brushes.Transparent;
+            if (!ForceSelected)
+                Grid1.Background = Brushes.Transparent;
         }
     }
 }
