@@ -24,7 +24,13 @@
                     <GroupBox Header="Button Colors" HorizontalAlignment="Left" Height="240" Margin="10,10,0,0" VerticalAlignment="Top" Width="378">
                         <ItemsControl>
 
-                            <Button Name="btnForecolor" Content="Text Color" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="44" Click="btnForegroundColor">
+                            <Button Name="btnForecolor" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="44" Click="btnForegroundColor">
+                                Text Normal Color
+                            </Button>
+                            <Button Name="btnForegroundSelectColor" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="45" Click="btnTextSelectColor_Click">
+                                <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">
+                                    Text Selection Color
+                                </TextBlock>
                             </Button>
                             <Button Name="btnSelectColor" HorizontalAlignment="Left" Width="111" Margin="200,8,0,0" Height="45" Click="btnSelectColor_Click">
                                 <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">
