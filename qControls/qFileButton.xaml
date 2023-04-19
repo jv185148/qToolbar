@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:qControls"
              mc:Ignorable="d" Height="120" Width="120" Margin="0" OpacityMask="White" Loaded="UserControl_Loaded">
-    <Grid Name="Grid1"  MouseDown="imgSource_MouseDown" MouseUp="imgSource_MouseUp" Background="Transparent" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Margin="0">
+    <Grid Name="Grid1"  MouseDown="imgSource_MouseDown" MouseUp="imgSource_MouseUp" Background="Transparent" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" 
+          Margin="0" MouseMove="imgSource_MouseMove">
         <Image Name="imgSource" Source="Game Icon.png" VerticalAlignment="Top" Height="43" Margin="0,8,0,0" OpacityMask="Black"/>
         <Label Name="lblText"  Margin="0,60,0,0" Background="{x:Null}" HorizontalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                VerticalContentAlignment="Top" TextOptions.TextFormattingMode="Display" MouseDown="imgSource_MouseDown" MouseUp="imgSource_MouseUp" 
-               FontSize="12" Grid.RowSpan="5">
+               FontSize="12" Grid.RowSpan="5" MouseMove="imgSource_MouseMove">
             <TextBlock TextWrapping="WrapWithOverflow">
                 Content="File Name Goes Here....."
             </TextBlock>

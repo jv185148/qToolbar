@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
 
-    <Grid DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+    <Grid Name="grid" DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
         <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <b:Interaction.Behaviors>

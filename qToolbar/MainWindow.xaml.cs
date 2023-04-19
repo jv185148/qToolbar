@@ -56,7 +56,9 @@ namespace qToolbar
             
         }
 
-        public System.Windows.Controls.WrapPanel iGridArea => GridArea;
+        public System.Windows.Controls.WrapPanel iWrapPanel => GridArea;
+
+        public System.Windows.Controls.Grid iGrid => grid;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
