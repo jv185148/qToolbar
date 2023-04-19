@@ -53,6 +53,8 @@ namespace qMain
 
                 button.Clicked += Button_Clicked;
                 button.RightClicked += Button_RightClicked;
+                button.Dragging += Button_Dragging;
+                button.DraggingDone += Button_DraggingDone;
             }
 
 
