@@ -42,7 +42,7 @@ namespace qControls
 
         private Brush _foreground;
         [Category("qToolbar")]
-        public Brush TextForeground { get => lblText.Foreground; set => lblText.Foreground = value; }
+        public Brush TextForeground { get => _foreground; set => _foreground= value; }
 
         private Brush _selectedColor;
         public Brush SelectedBrush
@@ -55,6 +55,16 @@ namespace qControls
             }
         }
 
+        private Brush _textSelectedColor;
+        public Brush TextForegroundSelect
+        {
+            get => _textSelectedColor; set
+            {
+                _textSelectedColor = value;
+                if (ForceSelected)
+                    Grid_MouseEnter(null, null);
+            }
+        }
 
         string iconLocation;
         string targetPath;
@@ -167,6 +177,8 @@ namespace qControls
                 ((((this.Parent as WrapPanel).Parent as ScrollViewer).Parent as Grid).Parent as Window).Title = value;
             }
         }
+
+
         internal void SetSteam()
         {
             if (!isSteamApp)
@@ -304,8 +316,8 @@ namespace qControls
             skip:
             // we can't execute click events as we were dragging.
             dragTimer.Stop();
-                DraggingDone?.Invoke(this,e);
-           
+            DraggingDone?.Invoke(this, e);
+
             dragging = false;
 
             timerElapsedCount = 0;
@@ -335,12 +347,16 @@ namespace qControls
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid1.Background = SelectedBrush;
+            lblText.Foreground = TextForegroundSelect;
         }
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
             if (!ForceSelected)
+            {
                 Grid1.Background = Brushes.Transparent;
+                lblText.Foreground = TextForeground;
+            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

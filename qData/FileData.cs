@@ -71,7 +71,7 @@ namespace qData
             //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
             System.Windows.Media.Imaging.PngBitmapEncoder encoder = new PngBitmapEncoder();
             //encoder.QualityLevel = 100;
-           
+
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image));
             encoder.Save(ms);
@@ -138,11 +138,11 @@ namespace qData
                     button.IconLocation = lines[3];
                     button.Image = getImageSource(lines[7]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
-
                     button.SelectedBrush = settings.SelectedTileColor;
+                    button.TextForegroundSelect = settings.ForegroundSelectColor;
                     button.TextForeground = settings.ForegroundColor;
                     button.RunWithSingleClick = settings.RunWithSingleClick;
-                  
+
 
                     buttons.Add(button);
                 }
@@ -150,7 +150,6 @@ namespace qData
             }
             finally
             {
-                settings.Dispose();
                 buttons.Clear();
             }
         }
