@@ -14,6 +14,7 @@ namespace qMain
     public class Main
     {
         public qCommon.Interfaces.iMain child;
+
         string appPath = System.AppDomain.CurrentDomain.BaseDirectory;
 
         bool collectionSaved = false;
@@ -76,9 +77,42 @@ namespace qMain
             return list.ToArray();
         }
 
+        public void ShowSettings()
+        {
 
+            Window window = (Window)child.iSettingsForm;
+            if (window.ShowDialog() == true)
+            {
+
+
+                qData.SettingsFile settings = new qData.SettingsFile();
+                settings.ForegroundColor = ((qCommon.Interfaces.iSettings)window).TextColor;
+                settings.SelectedTileColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
+                settings.RunWithSingleClick = ((qCommon.Interfaces.iSettings)window).RunWithSingleClick;
+                settings.Save();
+                settings.Dispose();
+
+                LoadSettings();
+            }
+        }
+
+        private void LoadSettings()
+        {
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+            foreach (var button in getButtons())
+            {
+                button.SelectedBrush = settings.SelectedTileColor;
+                button.TextForeground = settings.ForegroundColor;
+                button.RunWithSingleClick = settings.RunWithSingleClick;
+            }
+            settings.Dispose();
+        }
         public void AddFiles(string[] data)
         {
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+
             foreach (string file in data)
             {
                 qControls.qFileButton button = new qControls.qFileButton();
@@ -131,10 +165,17 @@ namespace qMain
                 button.Clicked += Button_Clicked;
                 button.RightClicked += Button_RightClicked;
 
-                button.SelectedBrush = qData.SettingsFile.SelectedTileColor;
+
+
+                button.SelectedBrush = settings.SelectedTileColor;
+                button.TextForeground = settings.ForegroundColor;
+
+                settings.Dispose();
 
                 collectionSaved = false;
             }
+
+            settings.Dispose();
         }
 
         private bool IsSteamApp(string file)

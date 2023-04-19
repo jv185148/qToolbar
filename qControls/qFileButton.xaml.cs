@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,21 @@ namespace qControls
         public delegate void dRightClicked(object sender);
         public event dRightClicked RightClicked;
 
-        public Brush SelectedBrush { get; set; }
+        private Brush _foreground;
+        [Category("qToolbar")]
+        public Brush TextForeground { get => lblText.Foreground; set => lblText.Foreground = value; }
+
+        private Brush _selectedColor;
+        public Brush SelectedBrush
+        {
+            get => _selectedColor; set
+            {
+                _selectedColor = value;
+                if (ForceSelected)
+                    Grid_MouseEnter(null, null);
+            }
+        }
+
 
         string iconLocation;
         string targetPath;
@@ -39,6 +54,7 @@ namespace qControls
         bool isSteamApp;
         bool runAdmin;
 
+        [Category("qToolbar")]
         public string Description
         {
             get
@@ -56,12 +72,17 @@ namespace qControls
 
         public bool isShortcut { get; set; }
         public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
+        [Category("qToolbar")]
         public string TargetPath { get => targetPath; set => targetPath = value; }
+        [Category("qToolbar")]
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
+        [Category("qToolbar")]
         public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
 
         public bool RunAdmin { get => runAdmin; set { runAdmin = value; SetRunAdmin(); } }
+
         private ImageSource imageSource;
+        [Category("qToolbar")]
         public ImageSource Image
         {
             get
@@ -76,6 +97,28 @@ namespace qControls
         }
 
         public static ImageSource FolderIcon { get => GetFolderIcon(); }
+
+        [Category("qToolbar")]
+        public bool RunWithSingleClick { get; set; }
+
+        private bool _forceSeleced;
+
+        [Category("qToolbar")]
+        public bool ForceSelected
+        {
+            get => _forceSeleced;
+            set
+            {
+                if (value) Grid_MouseEnter(null, null);
+                _forceSeleced = value;
+            }
+        }
+
+        System.Timers.Timer dragTimer;
+        bool dragging = false;
+        int timerElapsedCount;
+
+        bool buttonDown = false;
 
         internal void SetSteam()
         {
@@ -120,7 +163,7 @@ namespace qControls
         public qFileButton()
         {
             InitializeComponent();
-            IconChangedEvent += QFileButton_IconChangedEvent; 
+            IconChangedEvent += QFileButton_IconChangedEvent;
         }
 
 
@@ -176,12 +219,39 @@ namespace qControls
 
         }
 
-        private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
+        private void imgSource_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            //did the mouseDown event start here? Used for MouseUp.
+            buttonDown = true;
+
+            //check for dragging
+            dragTimer.Start();
+
+            if (e.ChangedButton == MouseButton.Left && !RunWithSingleClick && e.ClickCount == 2)
                 Clicked?.Invoke(this);
             else if (e.ChangedButton == MouseButton.Right)
                 RightClicked?.Invoke(this);
+        }
+        private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // If the MouseDown event did not start in this button, do not process anything here
+            if (!buttonDown)
+                return;
+
+            if (dragging) goto skip;
+
+            if (e.ChangedButton == MouseButton.Left && RunWithSingleClick && e.ClickCount == 1)
+                Clicked?.Invoke(this);
+            else if (e.ChangedButton == MouseButton.Right)
+                RightClicked?.Invoke(this);
+
+            skip:
+            // we can't execute click events as we were dragging.
+            dragTimer.Stop();
+            timerElapsedCount = 0;
+            dragging = false;
+
+            buttonDown = false;
         }
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
@@ -196,7 +266,7 @@ namespace qControls
 
             shortcut.Dispose();
         }
-        
+
         public void LoadFile(string file)
         {
 
@@ -209,7 +279,23 @@ namespace qControls
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            Grid1.Background = Brushes.Transparent;
+            if (!ForceSelected)
+                Grid1.Background = Brushes.Transparent;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            dragTimer = new System.Timers.Timer();
+            dragTimer.Interval = 100;
+            dragTimer.Elapsed += DragTimer_Elapsed;
+        }
+
+        private void DragTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (timerElapsedCount > 3)
+                dragging = true;
+            timerElapsedCount++;
+
         }
     }
 }

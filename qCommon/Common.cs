@@ -95,6 +95,19 @@ namespace q
             }
         }
 
+        public static System.Windows.Media.Color ConvertColor(System.Drawing.Color color)
+        {
+            System.Windows.Media.Color retColor = new System.Windows.Media.Color();
+
+            retColor.A = color.A;
+            retColor.R = color.R;
+            retColor.G = color.G;
+            retColor.B = color.B;
+           
+
+            return retColor;
+        }
+
         public static string GetSteamGameIcon(string file)
         {
             string[] lines = System.IO.File.ReadAllLines(file);

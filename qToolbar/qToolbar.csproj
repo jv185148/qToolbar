@@ -43,6 +43,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -61,6 +63,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="frmSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,6 +74,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="frmSettings.xaml.cs">
+      <DependentUpon>frmSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -109,6 +118,10 @@
     <ProjectReference Include="..\qControls\qControls.csproj">
       <Project>{d8a5201e-ce66-4689-9c28-437b6f0f72a0}</Project>
       <Name>qControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\qData\qData.csproj">
+      <Project>{884b42ac-bd6f-4202-9fbd-abea4365686e}</Project>
+      <Name>qData</Name>
     </ProjectReference>
     <ProjectReference Include="..\qMain\qMain.csproj">
       <Project>{2a62d8b0-5c38-482f-80d4-76219ccc3edf}</Project>
