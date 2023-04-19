@@ -32,7 +32,10 @@ namespace qMain
         public Main(qCommon.Interfaces.iMain child)
         {
             this.child = child;
+
+            (child as Window).PreviewMouseUp += Main_PreviewMouseUp;
         }
+
 
         public void Load()
         {
@@ -44,7 +47,9 @@ namespace qMain
 
             foreach (var button in buttons)
             {
-                child.iGridArea.Children.Add(button);
+                Canvas.SetLeft(button, 0);
+                Canvas.SetTop(button, 0);
+                child.iWrapPanel.Children.Add(button);
 
                 button.Clicked += Button_Clicked;
                 button.RightClicked += Button_RightClicked;
@@ -69,9 +74,9 @@ namespace qMain
         private qControls.qFileButton[] getButtons()
         {
             List<qControls.qFileButton> list = new List<qFileButton>();
-            for (int i = 0; i < child.iGridArea.Children.Count; i++)
+            for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
             {
-                list.Add((qFileButton)child.iGridArea.Children[i]);
+                list.Add((qFileButton)child.iWrapPanel.Children[i]);
             }
 
             return list.ToArray();
@@ -160,11 +165,14 @@ namespace qMain
                     }
                 }
 
-                child.iGridArea.Children.Add(button);
+                Canvas.SetLeft(button, 0);
+                Canvas.SetTop(button, 0);
+                child.iWrapPanel.Children.Add(button);
 
                 button.Clicked += Button_Clicked;
                 button.RightClicked += Button_RightClicked;
-
+                button.Dragging += Button_Dragging;
+                button.DraggingDone += Button_DraggingDone;
 
 
                 button.SelectedBrush = settings.SelectedTileColor;
@@ -175,8 +183,168 @@ namespace qMain
                 collectionSaved = false;
             }
 
+            child.iWrapPanel.MouseMove -= IGridArea_MouseMove;
+            child.iWrapPanel.MouseMove += IGridArea_MouseMove;
+
             settings.Dispose();
         }
+
+        qFileButton draggingButton;
+        bool dragging;
+
+        Point lastMousePosition;
+        bool updateMousePosition;
+        int newIndex;
+
+        private void IGridArea_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            return;
+            if (dragging && draggingButton != null)
+            {
+                if (updateMousePosition)
+                {
+                    lastMousePosition = e.GetPosition(child.iWrapPanel);
+                    updateMousePosition = false;
+                }
+
+                Point newMousePosition = e.GetPosition(child.iWrapPanel);
+
+                double deltaX = newMousePosition.X - lastMousePosition.X;
+                double deltaY = newMousePosition.Y - lastMousePosition.Y;
+
+                if (Canvas.GetLeft(draggingButton) == 0)
+                    Canvas.SetLeft(draggingButton, 0);
+                Canvas.SetLeft(draggingButton, Canvas.GetLeft(draggingButton) + deltaX);
+                Canvas.SetTop(draggingButton, Canvas.GetTop(draggingButton) + deltaY);
+
+                lastMousePosition = newMousePosition;
+
+                Point newPosition = e.GetPosition(child.iGrid);
+
+                (child as Window).Title=deltaX.ToString();
+
+                UIElement c = (UIElement)child;
+                
+                // newIndex = -1;
+                //for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
+                //{
+                //    UIElement uiElement = child.iWrapPanel.Children[i];
+                //    if (uiElement is qControls.qFileButton && uiElement != draggingButton)
+                //    {
+                //        Point childPosition = uiElement.TranslatePoint(new Point(0, 0), child.iGrid);
+                //        if (newPosition.X >= childPosition.X && newPosition.X <= childPosition.X + uiElement.RenderSize.Width)
+                //        {
+                //            newIndex = i;
+                //            break;
+                //        }
+                //    }
+                //}
+
+
+            }
+        }
+
+        private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (draggingButton != null)
+            {
+                draggingButton.ReleaseMouseCapture();
+                draggingButton.imgSource_MouseUp(draggingButton, e);
+
+            }
+
+        }
+
+
+        private void Button_DraggingDone(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            dragging = false;
+
+
+           // draggingButton.ParentTitle = "running";
+
+            // Find the index of the new position for the button
+            Point newPosition = e.GetPosition(child.iWrapPanel);
+             newIndex = -1;
+            double Ypos = 0;
+            for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
+            {
+                UIElement uiElement = child.iWrapPanel.Children[i];
+                if (uiElement is qControls.qFileButton && uiElement != draggingButton)
+                {
+                    Point childPosition = uiElement.TranslatePoint(new Point(0, 0), child.iWrapPanel);
+                    Ypos = childPosition.Y;
+                    if (newPosition.X >= childPosition.X && newPosition.X <= childPosition.X + uiElement.RenderSize.Width
+                        && newPosition.Y >=childPosition.Y && newPosition.Y<=childPosition.Y+uiElement.RenderSize.Height)
+                    {
+                        newIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // Reorder the buttons in the WrapPanel
+            //child.iWrapPanel.Children.Remove(draggingButton);
+            draggingButton.RenderTransform = new TranslateTransform(0, 0);
+            child.iGrid.Children.Remove(draggingButton);
+            if (newIndex == -1)
+            {
+                child.iWrapPanel.Children.Add(draggingButton);
+            }
+            else
+            {
+                child.iWrapPanel.Children.Insert(newIndex, draggingButton);
+                
+            }
+
+            child.iWrapPanel.ItemWidth = double.NaN;
+            child.iWrapPanel.ItemHeight = double.NaN;
+        }
+
+        private void Button_Dragging(object sender)
+        {
+            dragging = true;
+            draggingButton = (qFileButton)sender;
+            draggingButton.MouseMove += Button_MouseMove;
+            child.iWrapPanel.Children.Remove(draggingButton);
+            child.iGrid.Children.Add(draggingButton);
+           
+            draggingButton.CaptureMouse();
+
+            updateMousePosition = true;
+        }
+        private void Button_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+      
+            if (dragging && draggingButton != null)
+            {
+                if (updateMousePosition)
+                {
+                    lastMousePosition = e.GetPosition(child.iWrapPanel);
+                    updateMousePosition = false;
+                }
+
+                Point newMousePosition = e.GetPosition(child.iWrapPanel);
+
+                double deltaX = newMousePosition.X - lastMousePosition.X;
+                double deltaY = newMousePosition.Y - lastMousePosition.Y;
+
+                lastMousePosition = newMousePosition;
+
+                Point newPosition = e.GetPosition(child.iGrid);
+
+                Window window = (Window)child;
+                double x =0-window.Width/2;
+                double y = 0-window.Height/2;
+                x += newPosition.X;
+                y += newPosition.Y;
+                y += draggingButton.Height / 2;
+
+                draggingButton.RenderTransform = new TranslateTransform(x,y);
+
+            }
+        }
+
 
         private bool IsSteamApp(string file)
         {
@@ -190,12 +358,12 @@ namespace qMain
 
         public void Clear()
         {
-            int count = child.iGridArea.Children.Count;
+            int count = child.iWrapPanel.Children.Count;
 
             for (int i = count - 1; i >= 0; i--)
             {
-                var thing = (qControls.qFileButton)child.iGridArea.Children[i];
-                child.iGridArea.Children.RemoveAt(i);
+                var thing = (qControls.qFileButton)child.iWrapPanel.Children[i];
+                child.iWrapPanel.Children.RemoveAt(i);
 
                 thing.Dispose();
                 thing = null;
@@ -210,7 +378,7 @@ namespace qMain
 
         public void RemoveButton(qControls.qFileButton button)
         {
-            child.iGridArea.Children.Remove((UIElement)button);
+            child.iWrapPanel.Children.Remove((UIElement)button);
             button.Dispose();
         }
 

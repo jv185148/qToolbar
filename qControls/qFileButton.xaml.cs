@@ -24,9 +24,17 @@ namespace qControls
 
         //public string Text { get => lblText.Content.ToString(); set => lblText.Content = value; }
 
+        private delegate void TimerDelegate();
+
         public delegate void dClicked(object sender);
 
         public event dClicked Clicked;
+
+        public delegate void dDragging(object sender);
+        public delegate void dDraggingDone(object sender, System.Windows.Input.MouseEventArgs e);
+
+        public event dDragging Dragging;
+        public event dDraggingDone DraggingDone;
 
 
         public delegate void dRightClicked(object sender);
@@ -115,11 +123,50 @@ namespace qControls
         }
 
         System.Timers.Timer dragTimer;
-        bool dragging = false;
+
+        bool draggingCalled;
+        bool draggingDoneCalled;
+
+        bool _dragging;
+        WrapPanel wrapPanel => this.Parent as WrapPanel;
+        bool dragging
+        {
+            get { return _dragging; }
+            set
+            {
+                _dragging = value;
+                if (value)
+                {
+                    if (!draggingCalled)
+                        Dragging?.Invoke(this);
+                    draggingCalled = true;
+                    draggingDoneCalled = false;
+                }
+
+                else
+                {
+                    draggingDoneCalled = true;
+                    draggingCalled = false;
+                }
+            }
+        }
+
         int timerElapsedCount;
 
         bool buttonDown = false;
 
+        public string ParentTitle { get => parentText; set => parentText = value; }
+        private string parentText
+        {
+            get
+            {
+                return ((((this.Parent as WrapPanel).Parent as ScrollViewer).Parent as Grid).Parent as Window).Title;
+            }
+            set
+            {
+                ((((this.Parent as WrapPanel).Parent as ScrollViewer).Parent as Grid).Parent as Window).Title = value;
+            }
+        }
         internal void SetSteam()
         {
             if (!isSteamApp)
@@ -223,6 +270,8 @@ namespace qControls
         {
             //did the mouseDown event start here? Used for MouseUp.
             buttonDown = true;
+            // Dragging is true after 300ms of buttonDown
+
 
             //check for dragging
             dragTimer.Start();
@@ -232,7 +281,14 @@ namespace qControls
             else if (e.ChangedButton == MouseButton.Right)
                 RightClicked?.Invoke(this);
         }
-        private void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
+
+
+        private void imgSource_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        public void imgSource_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // If the MouseDown event did not start in this button, do not process anything here
             if (!buttonDown)
@@ -248,6 +304,10 @@ namespace qControls
             skip:
             // we can't execute click events as we were dragging.
             dragTimer.Stop();
+                DraggingDone?.Invoke(this,e);
+           
+            dragging = false;
+
             timerElapsedCount = 0;
             dragging = false;
 
@@ -290,12 +350,22 @@ namespace qControls
             dragTimer.Elapsed += DragTimer_Elapsed;
         }
 
+        private void Timer_SetDragging()
+        {
+            dragging = true;
+        }
         private void DragTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (timerElapsedCount > 3)
-                dragging = true;
+            {
+                dragTimer.Stop();
+                TimerDelegate td = new TimerDelegate(Timer_SetDragging);
+                Application.Current.Dispatcher.BeginInvoke(td);
+
+            }
             timerElapsedCount++;
 
         }
+
     }
 }
