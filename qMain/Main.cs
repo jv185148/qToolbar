@@ -188,9 +188,6 @@ namespace qMain
                 collectionSaved = false;
             }
 
-            child.iWrapPanel.MouseMove -= IGridArea_MouseMove;
-            child.iWrapPanel.MouseMove += IGridArea_MouseMove;
-
             settings.Dispose();
         }
 
@@ -200,54 +197,6 @@ namespace qMain
         Point lastMousePosition;
         bool updateMousePosition;
         int newIndex;
-
-        private void IGridArea_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            return;
-            if (dragging && draggingButton != null)
-            {
-                if (updateMousePosition)
-                {
-                    lastMousePosition = e.GetPosition(child.iWrapPanel);
-                    updateMousePosition = false;
-                }
-
-                Point newMousePosition = e.GetPosition(child.iWrapPanel);
-
-                double deltaX = newMousePosition.X - lastMousePosition.X;
-                double deltaY = newMousePosition.Y - lastMousePosition.Y;
-
-                if (Canvas.GetLeft(draggingButton) == 0)
-                    Canvas.SetLeft(draggingButton, 0);
-                Canvas.SetLeft(draggingButton, Canvas.GetLeft(draggingButton) + deltaX);
-                Canvas.SetTop(draggingButton, Canvas.GetTop(draggingButton) + deltaY);
-
-                lastMousePosition = newMousePosition;
-
-                Point newPosition = e.GetPosition(child.iGrid);
-
-                (child as Window).Title=deltaX.ToString();
-
-                UIElement c = (UIElement)child;
-                
-                // newIndex = -1;
-                //for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
-                //{
-                //    UIElement uiElement = child.iWrapPanel.Children[i];
-                //    if (uiElement is qControls.qFileButton && uiElement != draggingButton)
-                //    {
-                //        Point childPosition = uiElement.TranslatePoint(new Point(0, 0), child.iGrid);
-                //        if (newPosition.X >= childPosition.X && newPosition.X <= childPosition.X + uiElement.RenderSize.Width)
-                //        {
-                //            newIndex = i;
-                //            break;
-                //        }
-                //    }
-                //}
-
-
-            }
-        }
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
