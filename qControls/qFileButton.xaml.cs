@@ -42,7 +42,7 @@ namespace qControls
 
         private Brush _foreground;
         [Category("qToolbar")]
-        public Brush TextForeground { get => _foreground; set => _foreground= value; }
+        public Brush TextForeground { get => _foreground; set => _foreground = value; }
 
         private Brush _selectedColor;
         public Brush SelectedBrush
@@ -280,16 +280,23 @@ namespace qControls
 
         private void imgSource_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //did the mouseDown event start here? Used for MouseUp.
-            buttonDown = true;
-            // Dragging is true after 300ms of buttonDown
+
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount==1)
+            {
+                //did the mouseDown event start here? Used for MouseUp.
+                buttonDown = true;
+                // Dragging is true after 300ms of buttonDown
 
 
-            //check for dragging
-            dragTimer.Start();
+                //check for dragging
+                dragTimer.Start();
+            }
 
             if (e.ChangedButton == MouseButton.Left && !RunWithSingleClick && e.ClickCount == 2)
+            {
+
                 Clicked?.Invoke(this);
+            }
             else if (e.ChangedButton == MouseButton.Right)
                 RightClicked?.Invoke(this);
         }
@@ -315,9 +322,10 @@ namespace qControls
 
             skip:
             // we can't execute click events as we were dragging.
+            if (dragging)
+               
+                DraggingDone?.Invoke(this, e);
             dragTimer.Stop();
-            DraggingDone?.Invoke(this, e);
-
             dragging = false;
 
             timerElapsedCount = 0;
