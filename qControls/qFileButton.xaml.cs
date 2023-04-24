@@ -281,7 +281,7 @@ namespace qControls
         private void imgSource_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount==1)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
             {
                 //did the mouseDown event start here? Used for MouseUp.
                 buttonDown = true;
@@ -313,7 +313,16 @@ namespace qControls
             if (!buttonDown)
                 return;
 
-            if (dragging) goto skip;
+            bool wasDragging = dragging;
+
+            if (dragging)
+                DraggingDone?.Invoke(this, e);
+            dragTimer.Stop();
+            dragging = false;
+
+            timerElapsedCount = 0;
+
+            if (wasDragging) goto skip;
 
             if (e.ChangedButton == MouseButton.Left && RunWithSingleClick && e.ClickCount == 1)
                 Clicked?.Invoke(this);
@@ -322,14 +331,8 @@ namespace qControls
 
             skip:
             // we can't execute click events as we were dragging.
-            if (dragging)
-               
-                DraggingDone?.Invoke(this, e);
-            dragTimer.Stop();
-            dragging = false;
 
-            timerElapsedCount = 0;
-            dragging = false;
+
 
             buttonDown = false;
         }
@@ -343,7 +346,7 @@ namespace qControls
             this.IsSteamApp = false;
 
             this.RunAdmin = q.Common.GetAdminFlag(targetPath);
-
+ 
             shortcut.Dispose();
         }
 
