@@ -150,6 +150,8 @@ namespace qMain
                         case ".exe":
                             button.WorkingDirectory = file.Substring(0, file.LastIndexOf("\\"));
                             button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
+                            button.IconLocation = file + ",0";
+                           
                             break;
 
                         case "":
@@ -178,6 +180,7 @@ namespace qMain
                 button.Dragging += Button_Dragging;
                 button.DraggingDone += Button_DraggingDone;
 
+                button.RunWithSingleClick = settings.RunWithSingleClick;
 
                 button.SelectedBrush = settings.SelectedTileColor;
                 button.TextForeground = settings.ForegroundColor;
