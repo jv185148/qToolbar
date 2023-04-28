@@ -339,15 +339,50 @@ namespace qControls
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
+        
             this.Description = shortcut.Description;
             this.TargetPath = shortcut.TargetPath;
             this.IconLocation = shortcut.IconLocation;
             this.WorkingDirectory = shortcut.WorkingDirectory;
             this.IsSteamApp = false;
-
             this.RunAdmin = q.Common.GetAdminFlag(targetPath);
- 
+
             shortcut.Dispose();
+        }
+
+        public string GetArgs()
+        {
+            string args = string.Empty;
+            string target = this.targetPath;
+            if (!target.Contains("\""))
+            {
+                if (!target.Contains(" "))
+                    args = "";
+                else
+                {
+                    args = target.Substring(target.IndexOf(" ") + 1);
+                }
+            }
+            else
+            {
+                args = target.Substring(target.IndexOf("\"", 1) + 1);
+            }
+
+            return args;
+        }
+        public string GetTargetOnly()
+        {
+
+            string target = this.targetPath;
+            if (!target.Contains("\""))
+            {
+                if(target.Contains(" "))
+                target = target.Substring(0,target.IndexOf(" "));
+            }
+            else
+                target = target.Substring(0, target.IndexOf("\"", 1) + 1);
+
+            return target;
         }
 
         public void LoadFile(string file)

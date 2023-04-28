@@ -151,7 +151,7 @@ namespace qMain
                             button.WorkingDirectory = file.Substring(0, file.LastIndexOf("\\"));
                             button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
                             button.IconLocation = file + ",0";
-                           
+
                             break;
 
                         case "":
@@ -201,6 +201,8 @@ namespace qMain
         bool updateMousePosition;
         int newIndex;
 
+        #region MouseEvents
+
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (draggingButton != null)
@@ -218,11 +220,11 @@ namespace qMain
             dragging = false;
 
 
-           // draggingButton.ParentTitle = "running";
+            // draggingButton.ParentTitle = "running";
 
             // Find the index of the new position for the button
             Point newPosition = e.GetPosition(child.iWrapPanel);
-             newIndex = -1;
+            newIndex = -1;
             double Ypos = 0;
             for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
             {
@@ -232,7 +234,7 @@ namespace qMain
                     Point childPosition = uiElement.TranslatePoint(new Point(0, 0), child.iWrapPanel);
                     Ypos = childPosition.Y;
                     if (newPosition.X >= childPosition.X && newPosition.X <= childPosition.X + uiElement.RenderSize.Width
-                        && newPosition.Y >=childPosition.Y && newPosition.Y<=childPosition.Y+uiElement.RenderSize.Height)
+                        && newPosition.Y >= childPosition.Y && newPosition.Y <= childPosition.Y + uiElement.RenderSize.Height)
                     {
                         newIndex = i;
                         break;
@@ -251,7 +253,7 @@ namespace qMain
             else
             {
                 child.iWrapPanel.Children.Insert(newIndex, draggingButton);
-                
+
             }
 
             child.iWrapPanel.ItemWidth = double.NaN;
@@ -265,14 +267,14 @@ namespace qMain
             draggingButton.MouseMove += Button_MouseMove;
             child.iWrapPanel.Children.Remove(draggingButton);
             child.iGrid.Children.Add(draggingButton);
-           
+
             draggingButton.CaptureMouse();
 
             updateMousePosition = true;
         }
         private void Button_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-      
+
             if (dragging && draggingButton != null)
             {
                 if (updateMousePosition)
@@ -291,26 +293,18 @@ namespace qMain
                 Point newPosition = e.GetPosition(child.iGrid);
 
                 Window window = (Window)child;
-                double x =0-window.Width/2;
-                double y = 0-window.Height/2;
+                double x = 0 - window.Width / 2;
+                double y = 0 - window.Height / 2;
                 x += newPosition.X;
                 y += newPosition.Y;
                 y += draggingButton.Height / 2;
 
-                draggingButton.RenderTransform = new TranslateTransform(x,y);
+                draggingButton.RenderTransform = new TranslateTransform(x, y);
 
             }
         }
 
-
-        private bool IsSteamApp(string file)
-        {
-            bool result = false;
-
-            result = file.StartsWith("Steam");
-
-            return result;
-        }
+        #endregion
 
 
         public void Clear()
@@ -368,7 +362,25 @@ namespace qMain
                 RemoveButton(button);
             });
 
+            MenuItem edit = new MenuItem() { Header = "Edit" };
+            edit.Click += ((object eSender, RoutedEventArgs e) =>
+              {
+                  qControls.InputBox input = new InputBox();
+                  input.Heading = "Path for the file";
+                  input.Text = button.GetTargetOnly();
+                  input.AddSubitem();
+                  input.Subitems[0].Heading = "Executing Arguments";
+                  input.Subitems[0].Content = button.GetArgs();
+                  if (input.ShowDialog() == true)
+                  {
+                      button.Description = input.Text;
 
+                      string target = button.GetTargetOnly();
+                      string args = input.Subitems[0].Content;
+
+                      button.TargetPath = target + " " + args;
+                  }
+              });
 
             MenuItem rename = new MenuItem() { Header = "Rename" };
             rename.Click += ((object rSender, RoutedEventArgs e) =>
@@ -379,11 +391,13 @@ namespace qMain
                   if (input.ShowDialog() == true)
                   {
                       button.Description = input.Text;
+
                   }
               });
 
             cm.Items.Add(admin);
             cm.Items.Add(rename);
+            cm.Items.Add(edit);
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
@@ -395,13 +409,19 @@ namespace qMain
         private void Execute(qFileButton button)
         {
             System.Diagnostics.Process p = null;
+            string target = button.GetTargetOnly();
+            string args = button.GetArgs();
 
             // When our shortcut referres to a file directly
             if (!button.isShortcut)
             {
+
                 p = new System.Diagnostics.Process()
                 {
-                    StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", button.TargetPath)
+                    StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe",target)
+                    {
+                        Arguments = args
+                    }
                 };
             }
             else
@@ -411,8 +431,9 @@ namespace qMain
                 {
                     StartInfo = new System.Diagnostics.ProcessStartInfo()
                     {
+                        Arguments=args,
                         WorkingDirectory = button.WorkingDirectory,
-                        FileName = button.TargetPath
+                        FileName = target
                     }
 
                 };
