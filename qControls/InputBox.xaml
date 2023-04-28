@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:qControls"
         mc:Ignorable="d"
-        Title="InputBox" Height="110.534" Width="396" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" WindowStyle="ToolWindow">
-    <Grid>
-        <TextBox Name="txtText" Height="23" Margin="10,17,12.6,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" KeyUp="txtText_KeyUp"/>
-        <Button Name="btnCancel" Content="_Cancel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Margin="210,45,0,0" Height="26" Click="btnCancel_Click"/>
-        <Button Name="btnAccept" Content="_Accept" Margin="302,45,12.6,0" Height="26" VerticalAlignment="Top" Click="btnAccept_Click"/>
+        Title="InputBox" Height="97.594" Width="396" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" WindowStyle="ToolWindow">
+    <Grid Margin="0,0,-0.4,0.4">
 
+
+        <WrapPanel Name="Panel" Margin="0,1,0,30.8" Orientation="Vertical">
+        </WrapPanel>
+        <Button Name="btnCancel" Content="_Cancel" Margin="0,0,95,5" Width="74"  Height="26" 
+                VerticalAlignment="Bottom" HorizontalAlignment="Right"  Click="btnCancel_Click"/>
+        <Button Name="btnAccept" Content="_Accept" Margin="0,0,13,5" Width="74"  Height="26" 
+                VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="btnAccept_Click"/>
     </Grid>
 </Window>
