@@ -28,7 +28,7 @@ namespace qData
             shortcut.IconLocation = _shortcut.IconLocation;
             shortcut.TargetPath = _shortcut.TargetPath;
             shortcut.WorkingDirectory = _shortcut.WorkingDirectory;
-            shortcut.TargetPath +=" "+ _shortcut.Arguments;
+            shortcut.Arguments= _shortcut.Arguments;
             if (shortcut.Description == "")
             {
                 string d = fileName.Substring(fileName.LastIndexOf("\\") + 1);
@@ -54,11 +54,13 @@ namespace qData
             private string iconLocation;
             private string targetPath;
             private string workingDirectory;
+            private string arguments;
 
             public string Description { get => description; set => description = value; }
             public string IconLocation { get => iconLocation; set => iconLocation = value; }
             public string TargetPath { get => targetPath; set => targetPath = value; }
             public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
+            public string Arguments { get => arguments; set => arguments = value; }
 
             public void Dispose()
             {

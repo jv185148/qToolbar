@@ -11,8 +11,9 @@ namespace qCommon.Interfaces
         string Description { get; set; }
         string IconLocation { get; set; }
         string TargetPath { get; set; }
+        string Arguments { get; set; }
         string WorkingDirectory { get; set; }
-
+        
         void Dispose();
     }
 }

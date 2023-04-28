@@ -68,6 +68,7 @@ namespace qControls
 
         string iconLocation;
         string targetPath;
+        string args;
         string workingDirectory;
         bool isSteamApp;
         bool runAdmin;
@@ -91,7 +92,10 @@ namespace qControls
         public bool isShortcut { get; set; }
         public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
         [Category("qToolbar")]
-        public string TargetPath { get => targetPath; set => targetPath = value; }
+        public string TargetPath { get => targetPath; set => targetPath = value=="NA"?"":value; }
+        [Category("qToolbar")]
+        public string Arguments { get => args; set => args = value; }
+
         [Category("qToolbar")]
         public string WorkingDirectory { get => workingDirectory; set => workingDirectory = value; }
         [Category("qToolbar")]
@@ -278,6 +282,8 @@ namespace qControls
 
         }
 
+        #region Mouse Events
+
         private void imgSource_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
@@ -337,52 +343,20 @@ namespace qControls
             buttonDown = false;
         }
 
+        #endregion
+
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
         
             this.Description = shortcut.Description;
             this.TargetPath = shortcut.TargetPath;
+            this.Arguments = shortcut.Arguments;
             this.IconLocation = shortcut.IconLocation;
             this.WorkingDirectory = shortcut.WorkingDirectory;
             this.IsSteamApp = false;
             this.RunAdmin = q.Common.GetAdminFlag(targetPath);
 
             shortcut.Dispose();
-        }
-
-        public string GetArgs()
-        {
-            string args = string.Empty;
-            string target = this.targetPath;
-            if (!target.Contains("\""))
-            {
-                if (!target.Contains(" "))
-                    args = "";
-                else
-                {
-                    args = target.Substring(target.IndexOf(" ") + 1);
-                }
-            }
-            else
-            {
-                args = target.Substring(target.IndexOf("\"", 1) + 1);
-            }
-
-            return args;
-        }
-        public string GetTargetOnly()
-        {
-
-            string target = this.targetPath;
-            if (!target.Contains("\""))
-            {
-                if(target.Contains(" "))
-                target = target.Substring(0,target.IndexOf(" "));
-            }
-            else
-                target = target.Substring(0, target.IndexOf("\"", 1) + 1);
-
-            return target;
         }
 
         public void LoadFile(string file)

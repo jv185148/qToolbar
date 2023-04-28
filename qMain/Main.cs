@@ -41,7 +41,17 @@ namespace qMain
         {
             collectionSaved = true;
             qData.FileData fileData = new qData.FileData();
-            var buttons = fileData.Load();
+            qFileButton[] buttons = null;
+            try
+            {
+                buttons = fileData.Load();
+            }
+            catch (qCommon.Exceptions.ReadingException exception)
+            {
+                MessageBox.Show("There was an exception loading file data. This could potentially be a version difference.\n\nData will be cleared");
+                buttons = new qFileButton[0];
+                fileData.Save(buttons);
+            }
             if (buttons == null)
                 return;
 
@@ -367,18 +377,14 @@ namespace qMain
               {
                   qControls.InputBox input = new InputBox();
                   input.Heading = "Path for the file";
-                  input.Text = button.GetTargetOnly();
+                  input.Text = button.TargetPath;
                   input.AddSubitem();
                   input.Subitems[0].Heading = "Executing Arguments";
-                  input.Subitems[0].Content = button.GetArgs();
+                  input.Subitems[0].Content = button.Arguments;
                   if (input.ShowDialog() == true)
                   {
-                      button.Description = input.Text;
-
-                      string target = button.GetTargetOnly();
-                      string args = input.Subitems[0].Content;
-
-                      button.TargetPath = target + " " + args;
+                      button.TargetPath = input.Text;
+                      button.Arguments = input.Subitems[0].Content;
                   }
               });
 
@@ -409,20 +415,31 @@ namespace qMain
         private void Execute(qFileButton button)
         {
             System.Diagnostics.Process p = null;
-            string target = button.GetTargetOnly();
-            string args = button.GetArgs();
+            string target = button.TargetPath;
+            string args = button.Arguments;
 
             // When our shortcut referres to a file directly
             if (!button.isShortcut)
             {
-
-                p = new System.Diagnostics.Process()
+                if (!string.IsNullOrEmpty(args))
                 {
-                    StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe",target)
+                    p = new System.Diagnostics.Process()
                     {
-                        Arguments = args
-                    }
-                };
+
+                        StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", target)
+                        {
+                            Arguments = args
+
+                        }
+                    };
+                }
+                else
+                {
+                    p = new System.Diagnostics.Process()
+                    {
+                        StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", target)
+                    };
+                }
             }
             else
             {
@@ -431,7 +448,7 @@ namespace qMain
                 {
                     StartInfo = new System.Diagnostics.ProcessStartInfo()
                     {
-                        Arguments=args,
+                        Arguments = args,
                         WorkingDirectory = button.WorkingDirectory,
                         FileName = target
                     }

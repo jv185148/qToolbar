@@ -44,17 +44,29 @@ namespace qData
         {
             string data = "";
             int index = 0;
+  
             foreach (var button in buttons)
             {
                 index += 1;
+                if(button.IconLocation == "" ) button.IconLocation = null;
+                if (button.Arguments == "") button.Arguments = null;
+                string description = button.Description;
+                string isShortcut = button.isShortcut ? "1" : "0";
+                string iconLocation = button.IconLocation ?? "NA";
+                string targetPath = button.TargetPath;
+                string arguments = button.Arguments ?? "NA";
+                string workingDirectory = button.WorkingDirectory ?? "NA";
+                string isSteamApp = button.IsSteamApp.ToString();
+
                 StringBuilder buttonData = new StringBuilder();
                 buttonData.AppendLine("button" + (index < 10 ? "0" : "") + index);
-                buttonData.AppendLine(button.Description);
-                buttonData.AppendLine((button.isShortcut ? "1" : "0"));
-                buttonData.AppendLine(button.IconLocation);
-                buttonData.AppendLine(button.TargetPath);
-                buttonData.AppendLine(button.WorkingDirectory);
-                buttonData.AppendLine(button.IsSteamApp.ToString());
+                buttonData.AppendLine(description);
+                buttonData.AppendLine(isShortcut);
+                buttonData.AppendLine(iconLocation);
+                buttonData.AppendLine(targetPath);
+                buttonData.AppendLine(arguments);
+                buttonData.AppendLine(workingDirectory);
+                buttonData.AppendLine(isSteamApp);
                 buttonData.AppendLine(getBase64(button.Image));
                 buttonData.AppendLine(); buttonData.AppendLine();
 
@@ -97,7 +109,15 @@ namespace qData
             fs.Close();
             fs.Dispose();
 
-            qControls.qFileButton[] buttons = getButtons(buffer);
+            qControls.qFileButton[] buttons = null;
+            try
+            {
+                buttons = getButtons(buffer);
+            }
+            catch (qCommon.Exceptions.ReadingException ex)
+            {
+                throw ex;
+            }
             return buttons;
         }
 
@@ -133,10 +153,11 @@ namespace qData
                     button.isShortcut = lines[2] == "1";
 
                     button.TargetPath = lines[4];
-                    button.WorkingDirectory = lines[5];
-                    button.IsSteamApp = bool.Parse(lines[6]);
-                    button.IconLocation = lines[3];
-                    button.Image = getImageSource(lines[7]);
+                    button.Arguments = lines[5];
+                    button.WorkingDirectory = lines[6];
+                    button.IsSteamApp = bool.Parse(lines[7]);
+                    button.IconLocation = lines[3]=="NA"?"":lines[3];
+                    button.Image = getImageSource(lines[8]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
                     button.SelectedBrush = settings.SelectedTileColor;
                     button.TextForegroundSelect = settings.ForegroundSelectColor;
@@ -147,6 +168,10 @@ namespace qData
                     buttons.Add(button);
                 }
                 return buttons.ToArray();
+            }
+            catch (FormatException e)
+            {
+                throw new qCommon.Exceptions.ReadingException();
             }
             finally
             {
