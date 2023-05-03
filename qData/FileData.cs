@@ -153,8 +153,8 @@ namespace qData
                     button.isShortcut = lines[2] == "1";
 
                     button.TargetPath = lines[4];
-                    button.Arguments = lines[5];
-                    button.WorkingDirectory = lines[6];
+                    button.Arguments = lines[5]=="NA"?"":lines[5];
+                    button.WorkingDirectory = lines[6]=="NA"?"":lines[6];
                     button.IsSteamApp = bool.Parse(lines[7]);
                     button.IconLocation = lines[3]=="NA"?"":lines[3];
                     button.Image = getImageSource(lines[8]);
