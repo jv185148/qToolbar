@@ -103,7 +103,7 @@ namespace q
             retColor.R = color.R;
             retColor.G = color.G;
             retColor.B = color.B;
-           
+
 
             return retColor;
         }
@@ -192,6 +192,25 @@ namespace q
 
             return newValue;
         }
+
+        public static bool IsFile(string target)
+        {
+            bool result = false;
+
+            string fileName = "";
+            if (target.Contains("\\"))
+            {
+                fileName = target.Substring(target.LastIndexOf("\\") + 1);
+            }
+            if (fileName.Contains("."))
+            {
+                string ext = fileName.Substring(fileName.LastIndexOf("."));
+                result = ext.Length == 4;
+            }
+            return result;
+        }
+
+
     }
 }
 
