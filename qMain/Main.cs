@@ -418,6 +418,28 @@ namespace qMain
             string target = button.TargetPath;
             string args = button.Arguments;
 
+
+            if (q.Common.IsFile(target))
+            {
+                if (!System.IO.File.Exists(target))
+                {
+                    MessageBox.Show("This file doesn't exist on your hard drive.\n\n" + target,
+                        "File doesn't exist", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+            }
+            else
+            {
+                if (!System.IO.Directory.Exists(target))
+                {
+                    MessageBox.Show("This directory you're looking for doesn't exist.\n\n" + target,
+                                "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+            }
+
+
             // When our shortcut referres to a file directly
             if (!button.isShortcut)
             {
