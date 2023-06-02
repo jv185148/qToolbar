@@ -364,15 +364,12 @@ namespace qMain
             admin.Click += ((object aSender, RoutedEventArgs e) =>
             {
                 button.RunAdmin = q.Common.SetAdminFlag(button.TargetPath);
-                button.ResetSelect();
-                
             });
 
             MenuItem remove = new MenuItem() { Header = "Remove" };
             remove.Click += ((object dSender, RoutedEventArgs e) =>
             {
                 RemoveButton(button);
-                button.ResetSelect();
             });
 
             MenuItem edit = new MenuItem() { Header = "Edit" };
@@ -389,7 +386,6 @@ namespace qMain
                       button.TargetPath = input.Text;
                       button.Arguments = input.Subitems[0].Content;
                   }
-                  button.ResetSelect();
               });
 
             MenuItem rename = new MenuItem() { Header = "Rename" };
@@ -401,9 +397,7 @@ namespace qMain
                   if (input.ShowDialog() == true)
                   {
                       button.Description = input.Text;
-
                   }
-                  button.ResetSelect();
               });
 
             cm.Items.Add(admin);
@@ -412,11 +406,15 @@ namespace qMain
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
+            cm.Closed += ((object o, RoutedEventArgs e) =>button.ResetSelect());
+
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
 
+
             button.ForceSelected = true;
         }
+
 
 
         private void Execute(qFileButton button)
