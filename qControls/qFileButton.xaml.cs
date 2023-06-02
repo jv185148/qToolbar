@@ -136,6 +136,13 @@ namespace qControls
             }
         }
 
+        [Category("qToolbar")]
+        public void ResetSelect()
+        {
+            ForceSelected = false;
+            Grid_MouseLeave(null, null);
+        }
+
         System.Timers.Timer dragTimer;
 
         bool draggingCalled;
@@ -343,6 +350,22 @@ namespace qControls
             buttonDown = false;
         }
 
+
+        private void Grid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid1.Background = SelectedBrush;
+            lblText.Foreground = TextForegroundSelect;
+        }
+
+        private void Grid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!ForceSelected)
+            {
+                Grid1.Background = Brushes.Transparent;
+                lblText.Foreground = TextForeground;
+            }
+        }
+
         #endregion
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
@@ -364,20 +387,7 @@ namespace qControls
 
         }
 
-        private void Grid_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Grid1.Background = SelectedBrush;
-            lblText.Foreground = TextForegroundSelect;
-        }
 
-        private void Grid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!ForceSelected)
-            {
-                Grid1.Background = Brushes.Transparent;
-                lblText.Foreground = TextForeground;
-            }
-        }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
