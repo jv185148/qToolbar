@@ -83,6 +83,15 @@ namespace qMain
 
         }
 
+        public void Save()
+        {
+            qData.FileData fileData = new qData.FileData();
+            var buttons = getButtons();
+            fileData.Save(buttons);
+
+            fileData.Dispose();
+        }
+
         private qControls.qFileButton[] getButtons()
         {
             List<qControls.qFileButton> list = new List<qFileButton>();
@@ -397,19 +406,37 @@ namespace qMain
                   if (input.ShowDialog() == true)
                   {
                       button.Description = input.Text;
+                  }
+              });
 
+            MenuItem changeIcon = new MenuItem() { Header = "Change Icon" };
+            changeIcon.Click += ((object cSender, RoutedEventArgs e) =>
+              {
+                  GetIconBox box = new GetIconBox();
+                  box.SetIcon(ref button);
+                  if(box.ShowDialog() == true)
+                  {
+                      button.Image = box.newIcon.Clone();
+                      Save();
                   }
               });
 
             cm.Items.Add(admin);
             cm.Items.Add(rename);
             cm.Items.Add(edit);
+            cm.Items.Add(changeIcon);
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
+            cm.Closed += ((object o, RoutedEventArgs e) =>button.ResetSelect());
+
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
+
+
+            button.ForceSelected = true;
         }
+
 
 
         private void Execute(qFileButton button)
@@ -417,6 +444,28 @@ namespace qMain
             System.Diagnostics.Process p = null;
             string target = button.TargetPath;
             string args = button.Arguments;
+
+
+            if (q.Common.IsFile(target))
+            {
+                if (!System.IO.File.Exists(target))
+                {
+                    MessageBox.Show("This file doesn't exist on your hard drive.\n\n" + target,
+                        "File doesn't exist", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+            }
+            else
+            {
+                if (!System.IO.Directory.Exists(target))
+                {
+                    MessageBox.Show("This directory you're looking for doesn't exist.\n\n" + target,
+                                "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+            }
+
 
             // When our shortcut referres to a file directly
             if (button.isShortcut)
