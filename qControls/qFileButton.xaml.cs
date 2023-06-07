@@ -91,6 +91,9 @@ namespace qControls
 
         public bool isShortcut { get; set; }
         public string IconLocation { get => iconLocation; set { iconLocation = value; IconChangedEvent?.Invoke(this, null); } }
+        /// <summary>
+        /// The full path of the target
+        /// </summary>
         [Category("qToolbar")]
         public string TargetPath { get => targetPath; set => targetPath = value=="NA"?"":value; }
         [Category("qToolbar")]
@@ -237,7 +240,7 @@ namespace qControls
         }
 
 
-        private static ImageSource GetFolderIcon()
+        public static ImageSource GetFolderIcon()
         {
             var bitmap = Properties.Resources.Folder_icon;
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
@@ -254,6 +257,23 @@ namespace qControls
 
             bitmap.Dispose();
 
+            return bImage;
+        }
+        public static ImageSource GetGameIcon()
+        {
+            var bitmap = Properties.Resources.Game_Icon;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            BitmapImage bImage = new BitmapImage();
+            bImage.BeginInit();
+            bImage.StreamSource= ms;
+            bImage.CacheOption = BitmapCacheOption.OnLoad;
+            bImage.EndInit();
+            bImage.Freeze();
+
+            bitmap.Dispose();
             return bImage;
         }
 
