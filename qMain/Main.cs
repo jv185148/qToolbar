@@ -83,6 +83,15 @@ namespace qMain
 
         }
 
+        public void Save()
+        {
+            qData.FileData fileData = new qData.FileData();
+            var buttons = getButtons();
+            fileData.Save(buttons);
+
+            fileData.Dispose();
+        }
+
         private qControls.qFileButton[] getButtons()
         {
             List<qControls.qFileButton> list = new List<qFileButton>();
@@ -400,9 +409,22 @@ namespace qMain
                   }
               });
 
+            MenuItem changeIcon = new MenuItem() { Header = "Change Icon" };
+            changeIcon.Click += ((object cSender, RoutedEventArgs e) =>
+              {
+                  GetIconBox box = new GetIconBox();
+                  box.SetIcon(ref button);
+                  if(box.ShowDialog() == true)
+                  {
+                      button.Image = box.newIcon.Clone();
+                      Save();
+                  }
+              });
+
             cm.Items.Add(admin);
             cm.Items.Add(rename);
             cm.Items.Add(edit);
+            cm.Items.Add(changeIcon);
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
