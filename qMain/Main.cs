@@ -468,7 +468,7 @@ namespace qMain
 
 
             // When our shortcut referres to a file directly
-            if (!button.isShortcut)
+            if (button.isShortcut)
             {
                 if (!string.IsNullOrEmpty(args))
                 {
