@@ -83,17 +83,22 @@ namespace qControls
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Application Files *.exe|*.exe";
+            string imageFiles = "Image files *.bmp; *.jpg; *.png|*.bmp;*.jpg;*.png";
+
+            dlg.Filter = "Application Files *.exe|*.exe|" + imageFiles + "|All files *.*|*.*";
             dlg.FilterIndex = 0;
 
             if (dlg.ShowDialog() == true)
             {
-                ImageSource source= null;
+                ImageSource source = null;
                 string file = dlg.FileName;
 
-                if (file.EndsWith(".exe"))
+                if (q.Common.IsExeFile(file))
                     source = q.Common.IconX.GetIconFromFile(file);
-
+                else if (q.Common.IsImageFile(file))
+                {
+                    source = q.Common.GetIconImage(file);
+                }
                 imgIcon.Source = source.Clone();
             }
         }
