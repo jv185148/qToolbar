@@ -95,6 +95,65 @@ namespace q
             }
         }
 
+        public static ImageSource GetIconImage(string fileName)
+        {
+            System.Drawing.Image image = new System.Drawing.Bitmap(fileName);
+            int w, h;
+            w = image.Width;
+            h = image.Height;
+
+            if (w > h || w < h)
+            {
+                if (w > h)
+                {
+                    double d = w / (double)h;
+                    w = 64;
+                    h = (int)(w * d);
+                }
+                else
+                {
+                    double d = h / w;
+                    h = 64;
+                    w = (int)(h * d);
+                }
+            }
+            else
+            {
+                w = h = 64;
+            }
+            Bitmap bitmap = new Bitmap(w, h);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+            Rectangle src = new Rectangle(0, 0, image.Width, image.Height);
+            Rectangle dest = new Rectangle(0, 0, w, h);
+            g.DrawImage(image, dest, src, GraphicsUnit.Pixel);
+
+            g.Dispose();
+            src = Rectangle.Empty;
+            dest = Rectangle.Empty;
+
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            image.Dispose();
+            bitmap.Dispose();
+
+            BitmapImage bImage = new BitmapImage();
+            bImage.BeginInit();
+            bImage.StreamSource = ms;
+            bImage.CacheOption = BitmapCacheOption.OnLoad;
+            bImage.EndInit();
+            bImage.Freeze();
+
+            bitmap.Dispose();
+            return bImage;
+        }
+
+
         public static System.Windows.Media.Color ConvertColor(System.Drawing.Color color)
         {
             System.Windows.Media.Color retColor = new System.Windows.Media.Color();
@@ -210,6 +269,24 @@ namespace q
             return result;
         }
 
+        public static bool IsExeFile(string target)
+        {
+            return target.ToLower().EndsWith(".exe");
+        }
+
+        public static bool IsImageFile(string target)
+        {
+            bool result = false;
+            string s = target.ToLower();
+
+            if (s.EndsWith(".bmp")) result = true;
+            if (s.EndsWith(".jpg")) result = true;
+            if (s.EndsWith(".png")) result = true;
+
+            s = string.Empty;
+
+            return result;
+        }
 
     }
 }
