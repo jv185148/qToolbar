@@ -99,6 +99,11 @@ namespace qControls
                 {
                     source = q.Common.GetIconImage(file);
                 }
+                else
+                {
+                    MessageBox.Show("Couldn't use selected file as an image");
+                    return;
+                }
                 imgIcon.Source = source.Clone();
             }
         }
