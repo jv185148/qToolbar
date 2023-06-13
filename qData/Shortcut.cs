@@ -27,7 +27,9 @@ namespace qData
             shortcut.Description = _shortcut.Description;
             shortcut.IconLocation = _shortcut.IconLocation;
             shortcut.TargetPath = _shortcut.TargetPath;
-            shortcut.WorkingDirectory = _shortcut.WorkingDirectory;
+            string workingDirectory = _shortcut.WorkingDirectory;
+            if (string.IsNullOrEmpty(workingDirectory)) workingDirectory = getWorkingDirectory(_shortcut.TargetPath);
+            shortcut.WorkingDirectory = workingDirectory;
             shortcut.Arguments= _shortcut.Arguments;
             if (shortcut.Description == "")
             {
@@ -39,6 +41,14 @@ namespace qData
             _shortcut = null;
             return shortcut;
 
+        }
+
+        private static string getWorkingDirectory(string targetPath)
+        {
+            if (q.Common.IsFile(targetPath))
+                return targetPath.Substring(0, targetPath.LastIndexOf("\\"));
+            else
+                return targetPath;
         }
 
         private static uint GetSteamAppID(string file)

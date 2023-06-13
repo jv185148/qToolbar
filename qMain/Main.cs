@@ -465,11 +465,16 @@ namespace qMain
                     return;
                 }
             }
-
-
+            bool runAsExe = false;
+            if (q.Common.IsExeFile(button.TargetPath)) // run this as an EXE instead.
+            {
+                runAsExe = true;
+                goto exe; 
+            }
             // When our shortcut referres to a file directly
             if (button.isShortcut)
             {
+
                 if (!string.IsNullOrEmpty(args))
                 {
                     p = new System.Diagnostics.Process()
@@ -477,7 +482,8 @@ namespace qMain
 
                         StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", target)
                         {
-                            Arguments = args
+                            Arguments = args,
+                            WorkingDirectory = button.WorkingDirectory,
 
                         }
                     };
@@ -487,12 +493,16 @@ namespace qMain
                     p = new System.Diagnostics.Process()
                     {
                         StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", target)
+                        {
+                            WorkingDirectory=button.WorkingDirectory 
+                        }
                     };
                 }
             }
-            else
+            exe:
+            if(!button.isShortcut || runAsExe)
             {
-
+ 
                 p = new System.Diagnostics.Process()
                 {
                     StartInfo = new System.Diagnostics.ProcessStartInfo()
