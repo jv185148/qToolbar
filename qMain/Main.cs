@@ -15,7 +15,18 @@ namespace qMain
     {
         public qCommon.Interfaces.iMain child;
 
-        string appPath = System.AppDomain.CurrentDomain.BaseDirectory;
+        string appPath
+        {
+            get
+            {
+                string path = System.AppDomain.CurrentDomain.BaseDirectory;
+                if (path.EndsWith("\\"))
+                {
+                    path = path.Substring(0, path.Length - 1);
+                }
+                return path;
+            }
+        }
 
         bool collectionSaved = false;
         string collectionsPath
@@ -54,6 +65,9 @@ namespace qMain
             }
             if (buttons == null)
                 return;
+
+            //Wrap panel must be cleared.
+            child.iWrapPanel.Children.Clear();
 
             foreach (var button in buttons)
             {
@@ -551,6 +565,8 @@ namespace qMain
         public void SaveShortcutCollection()
         {
             SaveFileDialog dlg = new SaveFileDialog();
+            qData.FileData fileData= new qData.FileData();
+
             dlg.Filter = "qToolbar CollectionFiles *.qtb|*.qtb";
             dlg.FilterIndex = 0;
 
@@ -558,8 +574,11 @@ namespace qMain
 
             if (dlg.ShowDialog() == true)
             {
+               
                 string oldFile = appPath + "\\fileData.qtb";
                 string newFile = dlg.FileName;
+
+                    Save();
 
                 System.IO.File.Copy(oldFile, newFile, true);
 

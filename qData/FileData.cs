@@ -25,12 +25,15 @@ namespace qData
             path = string.Empty;
         }
 
-        public void Save(qControls.qFileButton[] buttons)
+        public void Save(qControls.qFileButton[] buttons, string qtbFile = "default")
         {
             string data = createData(buttons);
             byte[] buffer = Encoding.UTF8.GetBytes(data);
 
-            System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+            if (qtbFile == "default")
+                qtbFile = fileName;
+
+            System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             fs.Write(buffer, 0, buffer.Length);
             fs.Flush();
             fs.Close();
@@ -44,11 +47,11 @@ namespace qData
         {
             string data = "";
             int index = 0;
-  
+
             foreach (var button in buttons)
             {
                 index += 1;
-                if(button.IconLocation == "" ) button.IconLocation = null;
+                if (button.IconLocation == "") button.IconLocation = null;
                 if (button.Arguments == "") button.Arguments = null;
                 string description = button.Description;
                 string isShortcut = button.isShortcut ? "1" : "0";
@@ -153,10 +156,10 @@ namespace qData
                     button.isShortcut = lines[2] == "1";
 
                     button.TargetPath = lines[4];
-                    button.Arguments = lines[5]=="NA"?"":lines[5];
-                    button.WorkingDirectory = lines[6]=="NA"?"":lines[6];
+                    button.Arguments = lines[5] == "NA" ? "" : lines[5];
+                    button.WorkingDirectory = lines[6] == "NA" ? "" : lines[6];
                     button.IsSteamApp = bool.Parse(lines[7]);
-                    button.IconLocation = lines[3]=="NA"?"":lines[3];
+                    button.IconLocation = lines[3] == "NA" ? "" : lines[3];
                     button.Image = getImageSource(lines[8]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
                     button.SelectedBrush = settings.SelectedTileColor;
