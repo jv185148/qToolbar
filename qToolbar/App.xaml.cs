@@ -13,5 +13,19 @@ namespace qToolbar
     /// </summary>
     public partial class App : Application
     {
+        private void App_Startup(object sender, StartupEventArgs e)
+        {
+            MainWindow window = new MainWindow();
+            string file = "default";
+            string path = System.AppDomain.CurrentDomain.BaseDirectory;
+            if (e.Args.Length > 0)
+            {
+                if (System.IO.File.Exists(path + "\\ShortcutCollections\\" + e.Args[0]))
+                    file = e.Args[0];
+            }
+
+            window.iShortcutFile = file;
+            MainWindow.Show();
+        }
     }
 }
