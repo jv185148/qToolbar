@@ -27,6 +27,8 @@ namespace qControls
         {
             InitializeComponent();
             txtText = new TextBox() { Margin = new Thickness(10, 5, 0, 0), Width = 363 };
+            txtText.KeyUp += txtText_KeyUp;
+
             Panel.Children.Add(txtText);
 
         }
