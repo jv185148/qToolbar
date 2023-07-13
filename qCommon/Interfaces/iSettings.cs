@@ -9,5 +9,8 @@ namespace qCommon.Interfaces
          Brush SelectColor { get; set; }
 
         bool RunWithSingleClick { get; set; }
+
+        bool OpenAllShortcutFiles { get; set; }
+
     }
 }

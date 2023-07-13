@@ -131,9 +131,11 @@ namespace qMain
 
                 qData.SettingsFile settings = new qData.SettingsFile();
                 settings.ForegroundColor = ((qCommon.Interfaces.iSettings)window).ForegroundColor;
-                settings.SelectedTileColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
+                settings.SelectColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
                 settings.ForegroundSelectColor = ((qCommon.Interfaces.iSettings)window).ForegroundSelectColor;
                 settings.RunWithSingleClick = ((qCommon.Interfaces.iSettings)window).RunWithSingleClick;
+                settings.OpenAllShortcutFiles = ((qCommon.Interfaces.iSettings)window).OpenAllShortcutFiles;
+
                 settings.Save();
                 settings.Dispose();
 
@@ -147,7 +149,7 @@ namespace qMain
             settings.Load();
             foreach (var button in getButtons())
             {
-                button.SelectedBrush = settings.SelectedTileColor;
+                button.SelectedBrush = settings.SelectColor;
                 button.TextForegroundSelect = settings.ForegroundSelectColor;
                 button.TextForeground = settings.ForegroundColor;
                 button.RunWithSingleClick = settings.RunWithSingleClick;
@@ -221,7 +223,7 @@ namespace qMain
 
                 button.RunWithSingleClick = settings.RunWithSingleClick;
 
-                button.SelectedBrush = settings.SelectedTileColor;
+                button.SelectedBrush = settings.SelectColor;
                 button.TextForeground = settings.ForegroundColor;
                 button.TextForegroundSelect = settings.ForegroundSelectColor;
 

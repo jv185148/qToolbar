@@ -167,7 +167,7 @@ namespace qData
                     button.IconLocation = lines[3] == "NA" ? "" : lines[3];
                     button.Image = getImageSource(lines[8]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
-                    button.SelectedBrush = settings.SelectedTileColor;
+                    button.SelectedBrush = settings.SelectColor;
                     button.TextForegroundSelect = settings.ForegroundSelectColor;
                     button.TextForeground = settings.ForegroundColor;
                     button.RunWithSingleClick = settings.RunWithSingleClick;

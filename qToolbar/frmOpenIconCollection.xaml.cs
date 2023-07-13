@@ -70,7 +70,7 @@ namespace qToolbar
             }
             qData.SettingsFile settings = new qData.SettingsFile();
             settings.Load();
-            selectedButtonColor = settings.SelectedTileColor;
+            selectedButtonColor = settings.SelectColor;
 
             settings.Dispose();
         }
