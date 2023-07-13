@@ -10,28 +10,32 @@ namespace qData
 {
     public class FileData : IDisposable
     {
-        string fileName = "fileData.qtb";
+        const string DEFAULT_FILE = "fileData.qtb";
+        string qtbFile = "";
 
         string path = System.AppDomain.CurrentDomain.BaseDirectory;
 
 
-        public FileData()
+        public FileData(string qtbFile)
         {
+            if (qtbFile == "default")
+                qtbFile = DEFAULT_FILE;
+            else
+                path += "\\ShortcutCollections";
 
+            this.qtbFile = qtbFile.EndsWith(".qtb")?qtbFile:qtbFile+".qtb";
         }
+
         public void Dispose()
         {
-            fileName = string.Empty;
+            qtbFile = string.Empty;
             path = string.Empty;
         }
 
-        public void Save(qControls.qFileButton[] buttons, string qtbFile = "default")
+        public void Save(qControls.qFileButton[] buttons)
         {
             string data = createData(buttons);
             byte[] buffer = Encoding.UTF8.GetBytes(data);
-
-            if (qtbFile == "default")
-                qtbFile = fileName;
 
             System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             fs.Write(buffer, 0, buffer.Length);
@@ -104,9 +108,10 @@ namespace qData
 
         public qControls.qFileButton[] Load()
         {
-            if (!System.IO.File.Exists(path + "\\" + fileName))
+
+            if (!System.IO.File.Exists(path + "\\" + qtbFile))
                 return null;
-            System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+            System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
             fs.Close();
@@ -162,7 +167,7 @@ namespace qData
                     button.IconLocation = lines[3] == "NA" ? "" : lines[3];
                     button.Image = getImageSource(lines[8]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
-                    button.SelectedBrush = settings.SelectedTileColor;
+                    button.SelectedBrush = settings.SelectColor;
                     button.TextForegroundSelect = settings.ForegroundSelectColor;
                     button.TextForeground = settings.ForegroundColor;
                     button.RunWithSingleClick = settings.RunWithSingleClick;
@@ -184,7 +189,7 @@ namespace qData
 
         public void Delete()
         {
-            string file = path + "\\" + fileName;
+            string file = path + "\\" + qtbFile;
             if (System.IO.File.Exists(file))
             {
                 System.IO.File.Delete(file);

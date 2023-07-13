@@ -11,7 +11,8 @@ namespace qCommon.Interfaces
         System.Windows.Controls.WrapPanel iWrapPanel { get; }
         iSettings iSettingsForm { get; }
         System.Windows.Controls.Grid iGrid { get; }
-
+        iOpenW iOpenWindow { get; }
+        string iShortcutFile { get; set; }
 
         void Dispose();
     }

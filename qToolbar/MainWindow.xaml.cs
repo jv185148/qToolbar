@@ -25,13 +25,19 @@ namespace qToolbar
         private Main main;
 
         frmSettings fSettings;
+        frmOpenIconCollection fOpen;
+
+        private string _shortcutFile;
+        public string iShortcutFile { get => _shortcutFile; set => _shortcutFile = value; }
+
         #region Settings.
         public qCommon.Interfaces.iSettings iSettingsForm
         {
             get
             {
                 if (fSettings == null)
-                { fSettings = new frmSettings();
+                {
+                    fSettings = new frmSettings();
 
                     fSettings.Closed += FSettings_Closed;
                 }
@@ -46,6 +52,26 @@ namespace qToolbar
         }
         #endregion
 
+        #region Open TLB Shortcut Window
+        public qCommon.Interfaces.iOpenW iOpenWindow
+        {
+            get
+            {
+                if (fOpen == null)
+                {
+                    fOpen = new frmOpenIconCollection();
+                    fOpen.Closed += FOpen_Closed;
+                }
+                return fOpen;
+            }
+        }
+
+        private void FOpen_Closed(object sender, EventArgs e)
+        {
+            fOpen = null;
+        }
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,7 +79,7 @@ namespace qToolbar
 
         public void Dispose()
         {
-            
+
         }
 
         public System.Windows.Controls.WrapPanel iWrapPanel => GridArea;
@@ -77,7 +103,7 @@ namespace qToolbar
 
         private void mnuClearItems_Click(object sender, RoutedEventArgs e)
         {
-            this.main.Clear(); 
+            this.main.Clear();
         }
 
         private void mnuSettings_Click(object sender, RoutedEventArgs e)
@@ -101,6 +127,7 @@ namespace qToolbar
 
         bool dragging;
 
+
         private void Grid_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop))
@@ -119,13 +146,12 @@ namespace qToolbar
             if (dragging)
             {
                 dragging = false;
-                string[] data =(string[]) e.Data.GetData(System.Windows.DataFormats.FileDrop);
+                string[] data = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop);
 
                 main.AddFiles(data);
-               
+
             }
         }
-
 
         private void Grid_DragLeave(object sender, DragEventArgs e)
         {

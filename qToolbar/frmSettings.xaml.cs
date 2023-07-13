@@ -25,6 +25,10 @@ namespace qToolbar
                 radDouble.IsChecked = !value;
             }
         }
+
+        public bool OpenAllShortcutFiles { get => (bool)chkOpenAllShortcuts.IsChecked; set => chkOpenAllShortcuts.IsChecked = value; }
+
+
         public frmSettings()
         {
             InitializeComponent();
@@ -100,7 +104,7 @@ namespace qToolbar
             settings.Load();
 
             btnForecolor.Foreground = settings.ForegroundColor;
-            btnSelectColor.Background = settings.SelectedTileColor;
+            btnSelectColor.Background = settings.SelectColor;
             btnForegroundSelectColor.Foreground = settings.ForegroundSelectColor;
             RunWithSingleClick = settings.RunWithSingleClick;
 
@@ -109,6 +113,8 @@ namespace qToolbar
             btnGame.TextForegroundSelect = btnForegroundSelectColor.Foreground;
 
             btnGame.ForceSelected = true;
+
+            OpenAllShortcutFiles = settings.OpenAllShortcutFiles;
 
             settings.Dispose();
         }

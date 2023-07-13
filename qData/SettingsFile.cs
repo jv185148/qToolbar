@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace qData
 {
-    public class SettingsFile : aFile
+    public class SettingsFile : aFile,qCommon.Interfaces.iSettings
     {
         public override string FileName => "settings.ini";
 
@@ -19,11 +19,13 @@ namespace qData
         Field fForeground;
         Field fForegroundSelect;
         Field fRunWithSingleClick;
+        Field fOpenAllShortcuts;
 
-        public  Brush SelectedTileColor { get; set; }
+        public  Brush SelectColor { get; set; }
         public Brush ForegroundSelectColor { get; set; }
         public  Brush ForegroundColor { get; set; }
         public bool RunWithSingleClick { get; set; }
+        public bool OpenAllShortcutFiles { get; set; }
 
         public SettingsFile()
         {
@@ -31,27 +33,30 @@ namespace qData
             fForeground = new Field() { Title = "Fourground" };
             fForegroundSelect = new Field() { Title = "ForegroundSelect" };
             fRunWithSingleClick = new Field() { Title = "RunWithSingleClick" };
+            fOpenAllShortcuts = new Field() { Title = "OpenAllShortcutsOnStartup" };
 
-            fields = new Field[4];
+            fields = new Field[5];
             fields[0] = fTileColor;
             fields[1] = fForeground;
             fields[2] = fForegroundSelect;
             fields[3] = fRunWithSingleClick;
+            fields[4] = fOpenAllShortcuts;
         }
 
         protected override void PrepData()
         {
-            fTileColor.Data = SelectedTileColor.ToString();
+            fTileColor.Data = SelectColor.ToString();
             fForeground.Data = ForegroundColor.ToString();
             fForegroundSelect.Data = ForegroundSelectColor.ToString();
             fRunWithSingleClick.Data = RunWithSingleClick.ToString();
+            fOpenAllShortcuts.Data = OpenAllShortcutFiles.ToString();
         }
 
         protected override void LoadData()
         {
             BrushConverter bc = new BrushConverter();
             Brush b=(Brush) bc.ConvertFromString(fTileColor.Data);
-            SelectedTileColor = b.Clone();
+            SelectColor = b.Clone();
 
             if (fForegroundSelect.Data == null)
                 fForegroundSelect.Data = "#000000";
@@ -66,6 +71,10 @@ namespace qData
             bool.TryParse(fRunWithSingleClick.Data, out singleClick);
             RunWithSingleClick = singleClick;
 
+            bool openAllShortcuts;
+            bool.TryParse(fOpenAllShortcuts.Data, out openAllShortcuts);
+            OpenAllShortcutFiles = openAllShortcuts;
+
             b = null;
             bc = null;
         }
@@ -73,10 +82,12 @@ namespace qData
         protected override void LoadDefaults()
         {
             ForegroundColor= Brushes.Black;
-            SelectedTileColor = Brushes.SteelBlue;
+            SelectColor = Brushes.SteelBlue;
             ForegroundSelectColor = Brushes.Black;
 
             RunWithSingleClick = true;
+
+            OpenAllShortcutFiles = true;
         }
 
         protected override void childDispose()

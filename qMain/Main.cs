@@ -40,6 +40,19 @@ namespace qMain
                 return path.Replace("\\\\", "\\");
             }
         }
+
+        private qControls.qFileButton[] getButtons()
+        {
+            List<qControls.qFileButton> list = new List<qFileButton>();
+            for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
+            {
+                list.Add((qFileButton)child.iWrapPanel.Children[i]);
+            }
+
+            return list.ToArray();
+        }
+
+
         public Main(qCommon.Interfaces.iMain child)
         {
             this.child = child;
@@ -47,11 +60,11 @@ namespace qMain
             (child as Window).PreviewMouseUp += Main_PreviewMouseUp;
         }
 
-
+        #region Load & Save
         public void Load()
         {
             collectionSaved = true;
-            qData.FileData fileData = new qData.FileData();
+            qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             qFileButton[] buttons = null;
             try
             {
@@ -87,36 +100,27 @@ namespace qMain
             fileData.Dispose();
         }
 
-        public void Close()
-        {
-            qData.FileData fileData = new qData.FileData();
-            var buttons = getButtons();
-            fileData.Save(buttons);
-
-            fileData.Dispose();
-
-        }
-
         public void Save()
         {
-            qData.FileData fileData = new qData.FileData();
+            qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             var buttons = getButtons();
             fileData.Save(buttons);
 
             fileData.Dispose();
         }
+        #endregion
 
-        private qControls.qFileButton[] getButtons()
+        public void Close()
         {
-            List<qControls.qFileButton> list = new List<qFileButton>();
-            for (int i = 0; i < child.iWrapPanel.Children.Count; i++)
-            {
-                list.Add((qFileButton)child.iWrapPanel.Children[i]);
-            }
+            qData.FileData fileData = new qData.FileData(child.iShortcutFile);
+            var buttons = getButtons();
+            fileData.Save(buttons);
 
-            return list.ToArray();
+            fileData.Dispose();
+
         }
 
+        #region Settings
         public void ShowSettings()
         {
 
@@ -127,9 +131,11 @@ namespace qMain
 
                 qData.SettingsFile settings = new qData.SettingsFile();
                 settings.ForegroundColor = ((qCommon.Interfaces.iSettings)window).ForegroundColor;
-                settings.SelectedTileColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
+                settings.SelectColor = ((qCommon.Interfaces.iSettings)window).SelectColor;
                 settings.ForegroundSelectColor = ((qCommon.Interfaces.iSettings)window).ForegroundSelectColor;
                 settings.RunWithSingleClick = ((qCommon.Interfaces.iSettings)window).RunWithSingleClick;
+                settings.OpenAllShortcutFiles = ((qCommon.Interfaces.iSettings)window).OpenAllShortcutFiles;
+
                 settings.Save();
                 settings.Dispose();
 
@@ -143,13 +149,15 @@ namespace qMain
             settings.Load();
             foreach (var button in getButtons())
             {
-                button.SelectedBrush = settings.SelectedTileColor;
+                button.SelectedBrush = settings.SelectColor;
                 button.TextForegroundSelect = settings.ForegroundSelectColor;
                 button.TextForeground = settings.ForegroundColor;
                 button.RunWithSingleClick = settings.RunWithSingleClick;
             }
             settings.Dispose();
         }
+        #endregion
+
         public void AddFiles(string[] data)
         {
             qData.SettingsFile settings = new qData.SettingsFile();
@@ -215,7 +223,7 @@ namespace qMain
 
                 button.RunWithSingleClick = settings.RunWithSingleClick;
 
-                button.SelectedBrush = settings.SelectedTileColor;
+                button.SelectedBrush = settings.SelectColor;
                 button.TextForeground = settings.ForegroundColor;
                 button.TextForegroundSelect = settings.ForegroundSelectColor;
 
@@ -227,14 +235,14 @@ namespace qMain
             settings.Dispose();
         }
 
+        #region MouseEvents
+
         qFileButton draggingButton;
         bool dragging;
 
         Point lastMousePosition;
         bool updateMousePosition;
         int newIndex;
-
-        #region MouseEvents
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -339,7 +347,6 @@ namespace qMain
 
         #endregion
 
-
         public void Clear()
         {
             int count = child.iWrapPanel.Children.Count;
@@ -353,11 +360,11 @@ namespace qMain
                 thing = null;
             }
 
-            qData.FileData fileData = new qData.FileData();
-            fileData.Delete();
-            fileData.Dispose();
+            //qData.FileData fileData = new qData.FileData(child.iShortcutFile);
+            //fileData.Delete();
+            //fileData.Dispose();
 
-            Load();
+            //Load();
         }
 
         public void RemoveButton(qControls.qFileButton button)
@@ -366,6 +373,7 @@ namespace qMain
             button.Dispose();
         }
 
+        #region qButton Click Events
         private void Button_Clicked(object sender)
         {
 
@@ -428,7 +436,7 @@ namespace qMain
               {
                   GetIconBox box = new GetIconBox();
                   box.SetIcon(ref button);
-                  if(box.ShowDialog() == true)
+                  if (box.ShowDialog() == true)
                   {
                       button.Image = box.newIcon.Clone();
                       Save();
@@ -442,7 +450,7 @@ namespace qMain
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
-            cm.Closed += ((object o, RoutedEventArgs e) =>button.ResetSelect());
+            cm.Closed += ((object o, RoutedEventArgs e) => button.ResetSelect());
 
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
@@ -451,7 +459,7 @@ namespace qMain
             button.ForceSelected = true;
         }
 
-
+        #endregion
 
         private void Execute(qFileButton button)
         {
@@ -483,7 +491,7 @@ namespace qMain
             if (q.Common.IsExeFile(button.TargetPath)) // run this as an EXE instead.
             {
                 runAsExe = true;
-                goto exe; 
+                goto exe;
             }
             // When our shortcut referres to a file directly
             if (button.isShortcut)
@@ -508,15 +516,15 @@ namespace qMain
                     {
                         StartInfo = new System.Diagnostics.ProcessStartInfo("explorer.exe", target)
                         {
-                            WorkingDirectory=button.WorkingDirectory 
+                            WorkingDirectory = button.WorkingDirectory
                         }
                     };
                 }
             }
-            exe:
-            if(!button.isShortcut || runAsExe)
+        exe:
+            if (!button.isShortcut || runAsExe)
             {
- 
+
                 p = new System.Diagnostics.Process()
                 {
                     StartInfo = new System.Diagnostics.ProcessStartInfo()
@@ -545,45 +553,31 @@ namespace qMain
                 }
             }
 
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "qToolbar Collection Files *.qtb|*.qtb";
-            dlg.FilterIndex = 0;
-            dlg.InitialDirectory = collectionsPath;
+            Window window = (Window)child.iOpenWindow;
 
-            dlg.FileOk += ((object sender, System.ComponentModel.CancelEventArgs e) =>
+            if (window.ShowDialog() == true)
             {
-                string newFile = dlg.FileName;
-                string oldFile = appPath + "\\fileData.qtb";
-
-                System.IO.File.Copy(newFile, oldFile, true);
-
+                string shortcutName = ((qCommon.Interfaces.iOpenW)window).ShortcutName;
+                if (shortcutName == null)
+                    return;
+                child.iShortcutFile = shortcutName;
                 Load();
-            });
-            dlg.ShowDialog();
+            }
         }
 
         public void SaveShortcutCollection()
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            qData.FileData fileData= new qData.FileData();
 
-            dlg.Filter = "qToolbar CollectionFiles *.qtb|*.qtb";
-            dlg.FilterIndex = 0;
+            qControls.InputBox input = new InputBox();
+            input.Heading = "Enter a name for your shortcut collection";
 
-            dlg.InitialDirectory = collectionsPath; //collectionsPath.Replace("\\\\","\\");
-
-            if (dlg.ShowDialog() == true)
+            if (input.ShowDialog() == true)
             {
-               
-                string oldFile = appPath + "\\fileData.qtb";
-                string newFile = dlg.FileName;
-
-                    Save();
-
-                System.IO.File.Copy(oldFile, newFile, true);
-
-                collectionSaved = true;
+                child.iShortcutFile = input.Text;
+                Save();
+                collectionSaved=true;
             }
+
         }
 
         #endregion
