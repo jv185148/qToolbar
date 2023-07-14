@@ -86,6 +86,35 @@ namespace qToolbar
 
         public System.Windows.Controls.Grid iGrid => grid;
 
+        int _shortcutCount;
+        bool _doubleClickToRun;
+
+        public int iShortcutCount
+        {
+            get
+            {
+                return _shortcutCount;
+            }
+            set
+            {
+                _shortcutCount = value;
+                itmShortcutCount.Content = string.Format("{0} shortcuts loaded", _shortcutCount);
+            }
+        }
+
+        public bool iDoubleClickToRun
+        {
+            get
+            {
+                return _doubleClickToRun;
+            }
+            set
+            {
+                _doubleClickToRun = value;
+                itmDoubleClickToRun.Content = (value ? "Double " : "Single") + " click to open";
+            }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();

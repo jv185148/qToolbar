@@ -94,6 +94,11 @@ namespace qMain
                 button.DraggingDone += Button_DraggingDone;
             }
 
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+            child.iShortcutCount = getButtons().Length;
+            child.iDoubleClickToRun = !settings.RunWithSingleClick;
+            settings.Dispose();
 
 
             Array.Clear(buttons, 0, buttons.Length);
@@ -154,6 +159,10 @@ namespace qMain
                 button.TextForeground = settings.ForegroundColor;
                 button.RunWithSingleClick = settings.RunWithSingleClick;
             }
+
+            child.iShortcutCount = getButtons().Length;
+            child.iDoubleClickToRun = !settings.RunWithSingleClick;
+
             settings.Dispose();
         }
         #endregion

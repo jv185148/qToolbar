@@ -14,6 +14,8 @@ namespace qCommon.Interfaces
         iOpenW iOpenWindow { get; }
         string iShortcutFile { get; set; }
 
+        int iShortcutCount { get; set; }
+        bool iDoubleClickToRun { get; set; }
         void Dispose();
     }
 }

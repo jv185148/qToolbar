@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
 
     <Grid Name="grid" DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
-        <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,0,35">
             <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <b:Interaction.Behaviors>
                     <b:FluidMoveBehavior AppliesTo="Children">
@@ -36,5 +36,13 @@
             </MenuItem>
 
         </Menu>
+        <StatusBar Height="35" VerticalAlignment="Bottom" Margin="0,0,0,0">
+
+            <StatusBarItem Name="itmShortcutCount" Content="x Shortcuts" />
+
+            <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open"/>
+
+        </StatusBar>
+
     </Grid>
 </Window>
