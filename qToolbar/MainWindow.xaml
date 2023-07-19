@@ -38,9 +38,9 @@
         </Menu>
         <StatusBar Height="35" VerticalAlignment="Bottom" Margin="0,0,0,0">
 
-            <StatusBarItem Name="itmShortcutCount" Content="x Shortcuts" />
+            <StatusBarItem Name="itmShortcutCount" Content="x Shortcuts" BorderBrush="Black" BorderThickness="1,0,0,0" />
 
-            <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open"/>
+            <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open" BorderBrush="Black" BorderThickness="1,0,0,0" />
 
         </StatusBar>
 
