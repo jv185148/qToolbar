@@ -65,14 +65,14 @@ namespace qToolbar
         private int getFileCount(string path)
         {
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
-            return di.GetFiles().Length;
+            return di.GetFiles("*.qtb").Length;
         }
 
         private string[] collectionFiles(string path)
         {
             List<string> collections = new List<string>();
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
-            foreach(var file in di.GetFiles())
+            foreach(var file in di.GetFiles("*.qtb"))
             {
                 collections.Add(file.Name);
             }

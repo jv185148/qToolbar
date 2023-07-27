@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="qControls.DirectoryBrowser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:qControls"
+             mc:Ignorable="d" Width="250" Height="361.493" Loaded="UserControl_Loaded">
+    <Grid Margin="0,0,0,0">
+        <ComboBox Name="cboDrive" Margin="2,2,0,0" Height="25" VerticalAlignment="Top" SelectionChanged="cboDrive_SelectionChanged"/>
+        <TreeView Name="treeFolders" Margin="0,30,0,0" />
+    </Grid>
+</UserControl>

@@ -51,6 +51,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="_Image.xaml.cs">
+      <DependentUpon>_Image.xaml</DependentUpon>
+    </Compile>
+    <Page Include="DirectoryBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GetIconBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -59,20 +66,34 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="OpenImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="qFileButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="DirectoryBrowser.xaml.cs">
+      <DependentUpon>DirectoryBrowser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GetIconBox.xaml.cs">
       <DependentUpon>GetIconBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputBox.xaml.cs">
       <DependentUpon>InputBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenImage.xaml.cs">
+      <DependentUpon>OpenImage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="qFileButton.xaml.cs">
       <DependentUpon>qFileButton.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="_Image.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -8,7 +8,7 @@ namespace qData
 {
     public abstract class aFile : IDisposable
     {
-        public abstract string FileName { get; }
+        public abstract string FileName { get; set; }
 
         private Field[] fields;
 

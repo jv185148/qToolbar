@@ -51,6 +51,7 @@
     <Compile Include="Shortcut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsFile.cs" />
+    <Compile Include="WindowSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\qCommon\q.csproj">

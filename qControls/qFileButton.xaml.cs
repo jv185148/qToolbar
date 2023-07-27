@@ -388,6 +388,12 @@ namespace qControls
 
         #endregion
 
+        public void Refresh()
+        {
+            Grid1.Background = Brushes.Transparent;
+            lblText.Foreground = TextForeground;
+        }
+
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
         

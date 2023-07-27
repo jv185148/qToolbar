@@ -1,4 +1,5 @@
-﻿using qMain;
+﻿using qCommon.Interfaces;
+using qMain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,66 +29,19 @@ namespace qToolbar
         frmOpenIconCollection fOpen;
 
         private string _shortcutFile;
-        public string iShortcutFile { get => _shortcutFile; set => _shortcutFile = value; }
-
-        #region Settings.
-        public qCommon.Interfaces.iSettings iSettingsForm
-        {
-            get
-            {
-                if (fSettings == null)
-                {
-                    fSettings = new frmSettings();
-
-                    fSettings.Closed += FSettings_Closed;
-                }
-
-                return fSettings;
-            }
-        }
-
-        private void FSettings_Closed(object sender, EventArgs e)
-        {
-            fSettings = null;
-        }
-        #endregion
-
-        #region Open TLB Shortcut Window
-        public qCommon.Interfaces.iOpenW iOpenWindow
-        {
-            get
-            {
-                if (fOpen == null)
-                {
-                    fOpen = new frmOpenIconCollection();
-                    fOpen.Closed += FOpen_Closed;
-                }
-                return fOpen;
-            }
-        }
-
-        private void FOpen_Closed(object sender, EventArgs e)
-        {
-            fOpen = null;
-        }
-        #endregion
-
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
-        public void Dispose()
-        {
-
-        }
-
-        public System.Windows.Controls.WrapPanel iWrapPanel => GridArea;
-
-        public System.Windows.Controls.Grid iGrid => grid;
-
+        private string _background;
         int _shortcutCount;
         bool _doubleClickToRun;
+        System.Drawing.Color _color;
+
+        #region iMain properties
+
+        public string iShortcutFile
+        {
+            get => _shortcutFile;
+            set => _shortcutFile = value;
+        }
+
 
         public int iShortcutCount
         {
@@ -115,11 +69,116 @@ namespace qToolbar
             }
         }
 
+        public string iBackground
+        {
+            get => _background; set
+            {
+                _background = value;
+                if (System.IO.File.Exists(value))
+                    imgBackground.Source = new BitmapImage(new Uri(value, UriKind.Absolute));
+                else
+                    imgBackground.Source = null;
+            }
+
+        }
+
+        public Point iSize
+        {
+            get => new Point(this.Width, this.Height); set
+            {
+                this.Width = value.X;
+                this.Height = value.Y;
+            }
+        }
+        public Point iPosition
+        {
+            get => new Point(this.Left, this.Top); set
+            {
+                this.Left = value.X;
+                this.Top = value.Y;
+            }
+        }
+
+        public System.Drawing.Color iBackgroundColor
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                this.Background = new SolidColorBrush(q.Common.ConvertColor(value));
+            }
+        }
+
+        #endregion
+
+        #region Settings.
+
+        public qCommon.Interfaces.iSettings iSettingsForm
+        {
+            get
+            {
+                if (fSettings == null)
+                {
+                    fSettings = new frmSettings();
+
+                    fSettings.Closed += FSettings_Closed;
+                }
+
+                return fSettings;
+            }
+        }
+
+        private void FSettings_Closed(object sender, EventArgs e)
+        {
+            fSettings = null;
+        }
+
+        #endregion
+
+        #region Open TLB Shortcut Window
+
+        public qCommon.Interfaces.iOpenW iOpenWindow
+        {
+            get
+            {
+                if (fOpen == null)
+                {
+                    fOpen = new frmOpenIconCollection();
+                    fOpen.Closed += FOpen_Closed;
+                }
+                return fOpen;
+            }
+        }
+
+        private void FOpen_Closed(object sender, EventArgs e)
+        {
+            fOpen = null;
+        }
+
+        #endregion
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public System.Windows.Controls.WrapPanel iWrapPanel => GridArea;
+
+        public System.Windows.Controls.Grid iGrid => grid;
+
+
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.main = new qMain.Main(this);
             main.Load();
+
         }
 
         #region Menu events
@@ -139,6 +198,16 @@ namespace qToolbar
         {
             main.ShowSettings();
         }
+
+        private void mnuSetBackground_Click(object sender, RoutedEventArgs e)
+        {
+            main.SetBackground();
+        }
+        private void mnuSetSolidBackground_Click(object sender, RoutedEventArgs e)
+        {
+            main.SetBackgroundColor();
+        }
+
 
         private void mnuOpenShortcutCollection_Click(object sender, RoutedEventArgs e)
         {
@@ -198,6 +267,7 @@ namespace qToolbar
         {
             this.main.Close();
         }
+
 
     }
 }
