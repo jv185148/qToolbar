@@ -172,6 +172,7 @@ namespace qData
                     button.TextForeground = settings.ForegroundColor;
                     button.RunWithSingleClick = settings.RunWithSingleClick;
 
+                    button.Refresh();
 
                     buttons.Add(button);
                 }

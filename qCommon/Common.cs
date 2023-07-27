@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -36,19 +35,19 @@ namespace q
                 IntPtr[] phiconSmall = new IntPtr[iconCount];
                 ExtractIconEx(file, index, phiconLarge, phiconSmall, iconCount);
 
-                Icon[] iconsSmall = new Icon[iconCount];
-                Icon[] iconsLarge = new Icon[iconCount];
+                System.Drawing.Icon[] iconsSmall = new System.Drawing.Icon[iconCount];
+                System.Drawing.Icon[] iconsLarge = new System.Drawing.Icon[iconCount];
 
                 for (int i = 0; i < iconCount; i++)
                 {
                     if (phiconLarge != null)
                     {
-                        iconsLarge[i] = (Icon)Icon.FromHandle(phiconLarge[i]).Clone();
+                        iconsLarge[i] = (System.Drawing.Icon)System.Drawing.Icon.FromHandle(phiconLarge[i]).Clone();
                         DestroyIcon(phiconLarge[i]);
                     }
                     if (phiconSmall != null)
                     {
-                        iconsSmall[i] = (Icon)Icon.FromHandle(phiconSmall[i]).Clone();
+                        iconsSmall[i] = (System.Drawing.Icon)System.Drawing.Icon.FromHandle(phiconSmall[i]).Clone();
                         DestroyIcon(phiconSmall[i]);
                     }
                 }
@@ -121,20 +120,20 @@ namespace q
             {
                 w = h = 64;
             }
-            Bitmap bitmap = new Bitmap(w, h);
-            Graphics g = Graphics.FromImage(bitmap);
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(w, h);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bitmap);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
-            Rectangle src = new Rectangle(0, 0, image.Width, image.Height);
-            Rectangle dest = new Rectangle(0, 0, w, h);
-            g.DrawImage(image, dest, src, GraphicsUnit.Pixel);
+            System.Drawing.Rectangle src = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
+            System.Drawing.Rectangle dest = new System.Drawing.Rectangle(0, 0, w, h);
+            g.DrawImage(image, dest, src, System.Drawing.GraphicsUnit.Pixel);
 
             g.Dispose();
-            src = Rectangle.Empty;
-            dest = Rectangle.Empty;
+            src = System.Drawing.Rectangle.Empty;
+            dest = System.Drawing.Rectangle.Empty;
 
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -149,8 +148,27 @@ namespace q
             bImage.EndInit();
             bImage.Freeze();
 
-            bitmap.Dispose();
             return bImage;
+        }
+
+        public static ImageSource GetFullImage(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+
+            System.Drawing.Image image = System.Drawing.Bitmap.FromFile(fileName);
+
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            image.Dispose();
+
+            System.Windows.Media.Imaging.BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.StreamSource = ms;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            bitmap.Freeze();
+
+            return bitmap;
         }
 
 
@@ -235,6 +253,26 @@ namespace q
             key.Close();
             key.Dispose();
             return result;
+        }
+
+        public static string ColorString(System.Drawing.Color color)
+        {
+            return string.Format("{0},{1},{2},{3}", color.A, color.R, color.G, color.B);
+        }
+
+        public static System.Drawing.Color ColorFromString(string colorString)
+        {
+            int a, r, g, b;
+
+            string[] data = colorString.Split(',');
+            int.TryParse(data[0], out a);
+            int.TryParse(data[1], out r);
+            int.TryParse(data[2], out g);
+            int.TryParse(data[3], out b);
+
+            System.Drawing.Color color = System.Drawing.Color.FromArgb(a, r, g, b);
+
+            return color;
         }
 
         public static bool SetAdminFlag(string targetPath)

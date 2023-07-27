@@ -7,9 +7,10 @@ using System.Windows.Media;
 
 namespace qData
 {
-    public class SettingsFile : aFile,qCommon.Interfaces.iSettings
+    public class SettingsFile : aFile, qCommon.Interfaces.iSettings
     {
-        public override string FileName => "settings.ini";
+        string fileName = "settings.ini";
+        public override string FileName { get => fileName; set {/*Do Nothing*/ } }
 
         private Field[] fields;
         public override Field[] FieldData => fields;
@@ -21,9 +22,9 @@ namespace qData
         Field fRunWithSingleClick;
         Field fOpenAllShortcuts;
 
-        public  Brush SelectColor { get; set; }
+        public Brush SelectColor { get; set; }
         public Brush ForegroundSelectColor { get; set; }
-        public  Brush ForegroundColor { get; set; }
+        public Brush ForegroundColor { get; set; }
         public bool RunWithSingleClick { get; set; }
         public bool OpenAllShortcutFiles { get; set; }
 
@@ -55,7 +56,7 @@ namespace qData
         protected override void LoadData()
         {
             BrushConverter bc = new BrushConverter();
-            Brush b=(Brush) bc.ConvertFromString(fTileColor.Data);
+            Brush b = (Brush)bc.ConvertFromString(fTileColor.Data);
             SelectColor = b.Clone();
 
             if (fForegroundSelect.Data == null)
@@ -81,7 +82,7 @@ namespace qData
 
         protected override void LoadDefaults()
         {
-            ForegroundColor= Brushes.Black;
+            ForegroundColor = Brushes.Black;
             SelectColor = Brushes.SteelBlue;
             ForegroundSelectColor = Brushes.Black;
 

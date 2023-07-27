@@ -9,6 +9,8 @@
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
 
     <Grid Name="grid" DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+        <Image Name="imgBackground" Margin="0,0"/>
+
         <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,0,35">
             <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <b:Interaction.Behaviors>
@@ -33,6 +35,11 @@
             <MenuItem Header="_Tools" Height="18" Width="100">
                 <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
                 <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
+                <Separator Height="1"/>
+                <MenuItem Header="Background">
+                    <MenuItem Header="_Background Image..." x:Name="mnuSetBackgroundImage" Click="mnuSetBackground_Click" />
+                    <MenuItem Header="_Solid Color..." x:Name="mnuSetSolidBackground" Click="mnuSetSolidBackground_Click" />
+                </MenuItem>
             </MenuItem>
 
         </Menu>
@@ -43,6 +50,7 @@
             <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open"/>
 
         </StatusBar>
+
 
     </Grid>
 </Window>
