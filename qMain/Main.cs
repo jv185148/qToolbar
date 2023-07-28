@@ -41,6 +41,8 @@ namespace qMain
             }
         }
 
+
+
         private qControls.qFileButton[] getButtons()
         {
             List<qControls.qFileButton> list = new List<qFileButton>();
@@ -65,7 +67,7 @@ namespace qMain
         {
             collectionSaved = true;
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
-            
+
 
             qFileButton[] buttons = null;
             try
@@ -111,6 +113,11 @@ namespace qMain
 
             LoadWindowSettings();
 
+            if (isMain)
+            {
+                CheckIfRunAllShortcuts();
+            }
+
         }
 
         public void Save()
@@ -124,6 +131,75 @@ namespace qMain
 
 
         #endregion
+
+        public void CheckIfRunAllShortcuts()
+        {
+            string path = System.AppDomain.CurrentDomain.BaseDirectory;
+            string collectionsPath = path + "\\ShortcutCollections\\";
+
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+            bool openAllShortcuts = settings.OpenAllShortcutFiles;
+            settings.Dispose();
+
+            if (openAllShortcuts)
+            {
+                int count = getFileCount(collectionsPath);
+                if (count > 0)
+                {
+                    string[] files = collectionFiles(collectionsPath);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (files[i] == child.iShortcutFile)
+                            continue;
+
+                        string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+
+                        System.Diagnostics.Process p = new System.Diagnostics.Process()
+                        {
+                            StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
+                            {
+                                Arguments = files[i]
+                            }
+                        };
+                        p.Start();
+                    }
+                }
+            }
+        }
+
+        private int getFileCount(string path)
+        {
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+            return di.GetFiles("*.qtb").Length;
+        }
+
+        private string[] collectionFiles(string path)
+        {
+            List<string> collections = new List<string>();
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+            foreach (var file in di.GetFiles("*.qtb"))
+            {
+                collections.Add(file.Name);
+            }
+
+            return collections.ToArray();
+        }
+
+        private void CloseExtraProcesses()
+        {
+            var processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
+            foreach(var process in processes)
+            {
+                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id)
+                    continue;
+
+                process.CloseMainWindow();
+            }
+        }
+
+        public static bool AllShortcutsOpened;
 
         public void Close()
         {
@@ -159,6 +235,14 @@ namespace qMain
                 settings.Save();
                 settings.Dispose();
 
+                if (!AllShortcutsOpened && settings.OpenAllShortcutFiles)
+                {
+                    CheckIfRunAllShortcuts();
+                }
+                else
+                {
+                    CloseExtraProcesses();
+                }
                 LoadSettings();
             }
         }

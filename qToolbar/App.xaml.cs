@@ -30,31 +30,9 @@ namespace qToolbar
             if (e.Args.Length == 0)
             {
                 qMain.Main.isMain = true;
-
-                int count = getFileCount(collectionsPath);
-                if(count > 0)
-                {
-                    string[] files = collectionFiles(collectionsPath);
-                    if (openAllShortcuts)
-                    {
-                        for (int i = 1; i < count; i++)
-                        {
-                            string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-
-                            System.Diagnostics.Process p = new System.Diagnostics.Process()
-                            {
-                                StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
-                                {
-                                    Arguments = files[i]
-                                }
-                            };
-                            p.Start();
-                        }
-                    }
-                    //file = files[0];
-                }
+                qMain.Main.AllShortcutsOpened = false;
             }
-            
+
             if (e.Args.Length > 0)
             {
                 if (System.IO.File.Exists(collectionsPath + e.Args[0]))
@@ -65,22 +43,6 @@ namespace qToolbar
             MainWindow.Show();
         }
 
-        private int getFileCount(string path)
-        {
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
-            return di.GetFiles("*.qtb").Length;
-        }
 
-        private string[] collectionFiles(string path)
-        {
-            List<string> collections = new List<string>();
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
-            foreach(var file in di.GetFiles("*.qtb"))
-            {
-                collections.Add(file.Name);
-            }
-
-            return collections.ToArray();
-        }
     }
 }

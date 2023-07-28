@@ -39,7 +39,7 @@ namespace qToolbar
         public string iShortcutFile
         {
             get => _shortcutFile;
-            set => _shortcutFile = value;
+            set => _shortcutFile = value.EndsWith(".qtb") ? value : value + ".qtb";
         }
 
 
