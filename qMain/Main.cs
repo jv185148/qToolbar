@@ -65,19 +65,20 @@ namespace qMain
         {
             collectionSaved = true;
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
-
-            LoadWindowSettings();
+            
 
             qFileButton[] buttons = null;
             try
             {
-                buttons = fileData.Load();
+                buttons = fileData.LoadButtons();
+                if (fileData.ShortcutFileChanged)
+                    child.iShortcutFile = fileData.ChangedFile;
             }
             catch (qCommon.Exceptions.ReadingException exception)
             {
                 MessageBox.Show("There was an exception loading file data. This could potentially be a version difference.\n\nData will be cleared");
                 buttons = new qFileButton[0];
-                fileData.Save(buttons);
+                fileData.SaveButtons(buttons);
             }
             if (buttons == null)
                 return;
@@ -107,13 +108,16 @@ namespace qMain
             Array.Clear(buttons, 0, buttons.Length);
             fileData.Dispose();
 
+
+            LoadWindowSettings();
+
         }
 
         public void Save()
         {
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             var buttons = getButtons();
-            fileData.Save(buttons);
+            fileData.SaveButtons(buttons);
 
             fileData.Dispose();
         }
@@ -125,7 +129,10 @@ namespace qMain
         {
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             var buttons = getButtons();
-            fileData.Save(buttons);
+            fileData.SaveButtons(buttons);
+
+            if (isMain)
+                fileData.SetQTBDefult();
 
             fileData.Dispose();
 
@@ -275,6 +282,8 @@ namespace qMain
             windowSettings.Load();
             if (!string.IsNullOrEmpty(windowSettings.background))
                 child.iBackground = windowSettings.background;
+            else
+                child.iBackground = "";
 
             child.iBackgroundColor = q.Common.ColorFromString(windowSettings.iBackgroundColor);
 
@@ -294,6 +303,7 @@ namespace qMain
         Point lastMousePosition;
         bool updateMousePosition;
         int newIndex;
+        public static bool isMain;
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

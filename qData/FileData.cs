@@ -10,20 +10,23 @@ namespace qData
 {
     public class FileData : IDisposable
     {
-        const string DEFAULT_FILE = "fileData.qtb";
+        const string DEFAULT_FILE = "default.qtb";
         string qtbFile = "";
 
         string path = System.AppDomain.CurrentDomain.BaseDirectory;
 
+        public bool ShortcutFileChanged=false;
+
+        public string ChangedFile="";
 
         public FileData(string qtbFile)
         {
             if (qtbFile == "default")
                 qtbFile = DEFAULT_FILE;
-            else
-                path += "\\ShortcutCollections";
 
-            this.qtbFile = qtbFile.EndsWith(".qtb")?qtbFile:qtbFile+".qtb";
+            path += "\\ShortcutCollections";
+
+            this.qtbFile = qtbFile.EndsWith(".qtb") ? qtbFile : qtbFile + ".qtb";
         }
 
         public void Dispose()
@@ -32,7 +35,7 @@ namespace qData
             path = string.Empty;
         }
 
-        public void Save(qControls.qFileButton[] buttons)
+        public void SaveButtons(qControls.qFileButton[] buttons)
         {
             string data = createData(buttons);
             byte[] buffer = Encoding.UTF8.GetBytes(data);
@@ -106,11 +109,16 @@ namespace qData
             return retval;
         }
 
-        public qControls.qFileButton[] Load()
+        public qControls.qFileButton[] LoadButtons()
         {
 
-            if (!System.IO.File.Exists(path + "\\" + qtbFile))
+            if (!System.IO.File.Exists(path + "\\" + qtbFile) && qtbFile != DEFAULT_FILE)
                 return null;
+
+            if (qtbFile == DEFAULT_FILE)
+            {
+                qtbFile = GetQTBDefault();
+            }
             System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
@@ -127,6 +135,38 @@ namespace qData
                 throw ex;
             }
             return buttons;
+        }
+
+        private string GetQTBDefault()
+        {
+            this.ShortcutFileChanged = true;
+
+        recheck:
+            string s = "";
+            if (System.IO.File.Exists(DEFAULT_FILE))
+            {
+                s = System.IO.File.ReadAllText(DEFAULT_FILE);
+                s = s.Substring(s.LastIndexOf("\\") + 1);
+            }
+            if (string.IsNullOrEmpty(s))
+            {
+                string[] files = getQTBFiles();
+                if (files.Length > 0)
+                    qtbFile = files[0];
+
+                else
+                    qtbFile = "NewFile.qtb";
+                SetQTBDefult();
+
+                goto recheck;
+            }
+
+            ChangedFile = s;
+            return s;
+        }
+        public void SetQTBDefult()
+        {
+            System.IO.File.WriteAllText(DEFAULT_FILE, path + "\\" + qtbFile);
         }
 
         private qControls.qFileButton[] getButtons(byte[] buffer)
@@ -186,6 +226,18 @@ namespace qData
             {
                 buttons.Clear();
             }
+        }
+
+        private string[] getQTBFiles()
+        {
+            List<string> collections = new List<string>();
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+            foreach (var file in di.GetFiles("*.qtb"))
+            {
+                collections.Add(file.Name);
+            }
+
+            return collections.ToArray();
         }
 
         public void Delete()

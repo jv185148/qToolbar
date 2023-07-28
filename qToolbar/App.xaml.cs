@@ -29,6 +29,8 @@ namespace qToolbar
 
             if (e.Args.Length == 0)
             {
+                qMain.Main.isMain = true;
+
                 int count = getFileCount(collectionsPath);
                 if(count > 0)
                 {
@@ -49,9 +51,10 @@ namespace qToolbar
                             p.Start();
                         }
                     }
-                    file = files[0];
+                    //file = files[0];
                 }
             }
+            
             if (e.Args.Length > 0)
             {
                 if (System.IO.File.Exists(collectionsPath + e.Args[0]))
