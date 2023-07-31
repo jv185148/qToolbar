@@ -219,6 +219,22 @@ namespace qToolbar
             this.main.SaveShortcutCollection();
         }
 
+
+        private void mnuOpenAllShortcuts_Click(object sender, RoutedEventArgs e)
+        {
+            main.OpenAllShortcuts();
+        }
+
+        private void mnuCloseAllShortcuts_Click(object sender, RoutedEventArgs e)
+        {
+            main.CloseAllShortcuts();
+        }
+
+        private void mnuEditShortcuts_Click(object sender, RoutedEventArgs e)
+        {
+            main.EditShortcuts();
+        }
+
         #endregion
 
         #region Drag events

@@ -3,6 +3,7 @@ using qControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -144,28 +145,7 @@ namespace qMain
 
             if (openAllShortcuts)
             {
-                int count = getFileCount(collectionsPath);
-                if (count > 0)
-                {
-                    string[] files = collectionFiles(collectionsPath);
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        if (files[i] == child.iShortcutFile)
-                            continue;
-
-                        string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-
-                        System.Diagnostics.Process p = new System.Diagnostics.Process()
-                        {
-                            StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
-                            {
-                                Arguments = files[i]
-                            }
-                        };
-                        p.Start();
-                    }
-                }
+                OpenAllShortcuts();
             }
         }
 
@@ -187,12 +167,53 @@ namespace qMain
             return collections.ToArray();
         }
 
+        public void OpenAllShortcuts()
+        {
+            int count = getFileCount(collectionsPath);
+            if (count > 0)
+            {
+                string[] files = collectionFiles(collectionsPath);
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (Main.isMain && files[i] == child.iShortcutFile)
+                        continue;
+
+                    string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+
+                    System.Diagnostics.Process p = new System.Diagnostics.Process();
+                    //{
+                    //    StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
+                    //    {
+                    //        Arguments = files[i]
+                    //    }
+                    //};
+                    p.StartInfo = new System.Diagnostics.ProcessStartInfo(exe);
+                    p.StartInfo.Arguments = files[i];
+                    p.Start();
+                }
+            }
+        }
+        public void CloseAllShortcuts()
+        {
+            CloseExtraProcesses();
+        }
+
+        public void EditShortcuts()
+        {
+            throw new NotImplementedException();
+        }
+
         private void CloseExtraProcesses()
         {
+            if (!Main.isMain) return;
             var processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
-            foreach(var process in processes)
+
+            
+            foreach (var process in processes)
             {
-                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id)
+
+                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id && Main.isMain)
                     continue;
 
                 process.CloseMainWindow();
