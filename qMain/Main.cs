@@ -169,6 +169,7 @@ namespace qMain
 
         public void OpenAllShortcuts()
         {
+
             int count = getFileCount(collectionsPath);
             if (count > 0)
             {
@@ -176,7 +177,7 @@ namespace qMain
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (Main.isMain && files[i] == child.iShortcutFile)
+                    if (isMain && files[i] == child.iShortcutFile)
                         continue;
 
                     string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
@@ -192,6 +193,8 @@ namespace qMain
                     p.StartInfo.Arguments = files[i];
                     p.Start();
                 }
+
+                AllShortcutsOpened = true;
             }
         }
         public void CloseAllShortcuts()
@@ -201,23 +204,51 @@ namespace qMain
 
         public void EditShortcuts()
         {
-            throw new NotImplementedException();
+            child.iEditShortcutWindow.LoadedShortcut = child.iShortcutFile;
+
+            Window editWindow = (Window)child.iEditShortcutWindow;
+
+            if (editWindow.ShowDialog() == true)
+            {
+                if (child.iEditShortcutWindow.LoadedShortcutChanged)
+                {
+                    child.iShortcutFile = child.iEditShortcutWindow.LoadedShortcut;
+                    Load();
+
+                    qData.FileData fileData = new qData.FileData(child.iShortcutFile);
+                    fileData.SetQTBDefult();
+                    fileData.Dispose();
+                }
+
+                System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
+                if (processes.Length > 1)
+                {
+                    CloseAllShortcuts();
+                    OpenAllShortcuts();
+                }
+
+                Array.Clear(processes, 0, processes.Length);
+            }
+
+
         }
 
         private void CloseExtraProcesses()
         {
-            if (!Main.isMain) return;
+            if (!isMain) return;
             var processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
 
-            
+
             foreach (var process in processes)
             {
 
-                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id && Main.isMain)
+                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id && isMain)
                     continue;
 
                 process.CloseMainWindow();
             }
+
+            Array.Clear(processes, 0, processes.Length);
         }
 
         public static bool AllShortcutsOpened;
@@ -235,6 +266,10 @@ namespace qMain
 
             SaveWindowSettings();
 
+            if (AllShortcutsOpened)
+            {
+                CloseAllShortcuts();
+            }
         }
 
         #region Settings
@@ -408,7 +443,8 @@ namespace qMain
         Point lastMousePosition;
         bool updateMousePosition;
         int newIndex;
-        public static bool isMain;
+
+        public  bool isMain { get => child.isMain; set => child.isMain = value; }
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

@@ -8,10 +8,12 @@ namespace qCommon.Interfaces
 {
     public interface iMain
     {
+        bool isMain { get; set; }
         System.Windows.Controls.WrapPanel iWrapPanel { get; }
         iSettings iSettingsForm { get; }
         System.Windows.Controls.Grid iGrid { get; }
         iOpenW iOpenWindow { get; }
+        iEditShortcutW iEditShortcutWindow { get; }
         string iShortcutFile { get; set; }
 
         int iShortcutCount { get; set; }

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Interfaces\iEditShortcutW.cs" />
     <Compile Include="Interfaces\iMain.cs" />
     <Compile Include="Interfaces\iWindowSettings.cs" />
     <Compile Include="Interfaces\iOpenW.cs" />

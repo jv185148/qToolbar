@@ -26,10 +26,11 @@ namespace qToolbar
             bool openAllShortcuts = settings.OpenAllShortcutFiles;
             settings.Dispose();
 
-
+            bool setMain = false;
             if (e.Args.Length == 0)
             {
-                qMain.Main.isMain = true;
+                //qMain.Main.isMain = true;
+                setMain = true;
                 qMain.Main.AllShortcutsOpened = false;
             }
 
@@ -40,7 +41,12 @@ namespace qToolbar
             }
 
             window.iShortcutFile = file;
+            window.isMain = setMain;
+
+
             MainWindow.Show();
+
+        
         }
 
 

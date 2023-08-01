@@ -25,8 +25,10 @@ namespace qToolbar
     {
         private Main main;
 
+        private bool _isMain;
         frmSettings fSettings;
         frmOpenIconCollection fOpen;
+        frmEditShortcutsWindow fEditShortcutW;
 
         private string _shortcutFile;
         private string _background;
@@ -36,12 +38,54 @@ namespace qToolbar
 
         #region iMain properties
 
+        public bool isMain
+        {
+            get => _isMain;
+            set
+            {
+                _isMain = value;
+                //mnuShortcuts.IsEnabled = value;
+                mnuShortcuts.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         public string iShortcutFile
         {
             get => _shortcutFile;
             set => _shortcutFile = value.EndsWith(".qtb") ? value : value + ".qtb";
         }
 
+
+        public qCommon.Interfaces.iOpenW iOpenWindow
+        {
+            get
+            {
+                if (fOpen == null)
+                {
+                    fOpen = new frmOpenIconCollection();
+                    fOpen.Closed += FOpen_Closed;
+                }
+                return fOpen;
+            }
+        }
+
+        public qCommon.Interfaces.iEditShortcutW iEditShortcutWindow
+        {
+            get
+            {
+                if (fEditShortcutW == null)
+                {
+                    fEditShortcutW = new frmEditShortcutsWindow();
+                    fEditShortcutW.Closed += FEditShortcutW_Closed;
+                }
+                return fEditShortcutW;
+            }
+        }
+
+        private void FEditShortcutW_Closed(object sender, EventArgs e)
+        {
+            //fEditShortcutW = null;
+        }
 
         public int iShortcutCount
         {
@@ -137,18 +181,6 @@ namespace qToolbar
 
         #region Open TLB Shortcut Window
 
-        public qCommon.Interfaces.iOpenW iOpenWindow
-        {
-            get
-            {
-                if (fOpen == null)
-                {
-                    fOpen = new frmOpenIconCollection();
-                    fOpen.Closed += FOpen_Closed;
-                }
-                return fOpen;
-            }
-        }
 
         private void FOpen_Closed(object sender, EventArgs e)
         {
@@ -172,9 +204,9 @@ namespace qToolbar
         public System.Windows.Controls.Grid iGrid => grid;
 
 
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+          
             this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.main = new qMain.Main(this);
             main.Load();
