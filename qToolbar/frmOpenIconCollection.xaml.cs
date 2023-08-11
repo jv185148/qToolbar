@@ -35,7 +35,7 @@ namespace qToolbar
         }
         string selectedShortcut;
 
-        public string ShortcutName => selectedShortcut;
+        public string ShortcutName => selectedShortcut+".qtb";
 
         public frmOpenIconCollection()
         {

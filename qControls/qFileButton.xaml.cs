@@ -205,6 +205,9 @@ namespace qControls
             imgSteam.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Show or hide the icon indicating that this item should be run as a System Admin
+        /// </summary>
         internal void SetRunAdmin()
         {
             if (RunAdmin)

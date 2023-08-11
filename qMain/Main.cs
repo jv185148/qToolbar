@@ -3,6 +3,7 @@ using qControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,6 +42,9 @@ namespace qMain
             }
         }
 
+
+        System.IO.FileSystemWatcher fileWatcher;
+
         private qControls.qFileButton[] getButtons()
         {
             List<qControls.qFileButton> list = new List<qFileButton>();
@@ -58,6 +62,26 @@ namespace qMain
             this.child = child;
 
             (child as Window).PreviewMouseUp += Main_PreviewMouseUp;
+
+            fileWatcher = new System.IO.FileSystemWatcher(System.AppDomain.CurrentDomain.BaseDirectory);
+
+            fileWatcher.NotifyFilter = System.IO.NotifyFilters.LastWrite
+                                    | System.IO.NotifyFilters.CreationTime
+                                    | System.IO.NotifyFilters.Size;
+
+            fileWatcher.EnableRaisingEvents = true;
+            fileWatcher.Filter = "*";
+            fileWatcher.Changed += SettingsWatcher_Changed;
+        }
+
+        private void SettingsWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+            if (e.Name == "settings.ini")
+            {
+                Window w=(Window)child;
+                w.Dispatcher.Invoke(() => { LoadSettings(); });
+                //LoadSettings();
+            }
         }
 
         #region Load & Save
@@ -66,18 +90,19 @@ namespace qMain
             collectionSaved = true;
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
 
-            LoadWindowSettings();
 
             qFileButton[] buttons = null;
             try
             {
-                buttons = fileData.Load();
+                buttons = fileData.LoadButtons();
+                if (fileData.ShortcutFileChanged)
+                    child.iShortcutFile = fileData.ChangedFile;
             }
             catch (qCommon.Exceptions.ReadingException exception)
             {
                 MessageBox.Show("There was an exception loading file data. This could potentially be a version difference.\n\nData will be cleared");
                 buttons = new qFileButton[0];
-                fileData.Save(buttons);
+                fileData.SaveButtons(buttons);
             }
             if (buttons == null)
                 return;
@@ -107,13 +132,21 @@ namespace qMain
             Array.Clear(buttons, 0, buttons.Length);
             fileData.Dispose();
 
+
+            LoadWindowSettings();
+
+            if (isMain)
+            {
+                CheckIfRunAllShortcuts();
+            }
+
         }
 
         public void Save()
         {
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             var buttons = getButtons();
-            fileData.Save(buttons);
+            fileData.SaveButtons(buttons);
 
             fileData.Dispose();
         }
@@ -121,16 +154,143 @@ namespace qMain
 
         #endregion
 
+        public void CheckIfRunAllShortcuts()
+        {
+            string path = System.AppDomain.CurrentDomain.BaseDirectory;
+            string collectionsPath = path + "\\ShortcutCollections\\";
+
+            qData.SettingsFile settings = new qData.SettingsFile();
+            settings.Load();
+            bool openAllShortcuts = settings.OpenAllShortcutFiles;
+            settings.Dispose();
+
+            if (openAllShortcuts)
+            {
+                OpenAllShortcuts();
+            }
+        }
+
+        private int getFileCount(string path)
+        {
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+            return di.GetFiles("*.qtb").Length;
+        }
+
+        private string[] collectionFiles(string path)
+        {
+            List<string> collections = new List<string>();
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+            foreach (var file in di.GetFiles("*.qtb"))
+            {
+                collections.Add(file.Name);
+            }
+
+            return collections.ToArray();
+        }
+
+        public void OpenAllShortcuts()
+        {
+
+            int count = getFileCount(collectionsPath);
+            if (count > 0)
+            {
+                string[] files = collectionFiles(collectionsPath);
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (isMain && files[i] == child.iShortcutFile)
+                        continue;
+
+                    string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+
+                    System.Diagnostics.Process p = new System.Diagnostics.Process();
+                    //{
+                    //    StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
+                    //    {
+                    //        Arguments = files[i]
+                    //    }
+                    //};
+                    p.StartInfo = new System.Diagnostics.ProcessStartInfo(exe);
+                    p.StartInfo.Arguments = files[i];
+                    p.Start();
+                }
+
+                AllShortcutsOpened = true;
+            }
+        }
+        public void CloseAllShortcuts()
+        {
+            CloseExtraProcesses();
+        }
+
+        public void EditShortcuts()
+        {
+            child.iEditShortcutWindow.LoadedShortcut = child.iShortcutFile;
+
+            Window editWindow = (Window)child.iEditShortcutWindow;
+
+            if (editWindow.ShowDialog() == true)
+            {
+                if (child.iEditShortcutWindow.LoadedShortcutChanged)
+                {
+                    child.iShortcutFile = child.iEditShortcutWindow.LoadedShortcut;
+                    Load();
+
+                    qData.FileData fileData = new qData.FileData(child.iShortcutFile);
+                    fileData.SetQTBDefult();
+                    fileData.Dispose();
+                }
+
+                System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
+                if (processes.Length > 1)
+                {
+                    CloseAllShortcuts();
+                    OpenAllShortcuts();
+                }
+
+                Array.Clear(processes, 0, processes.Length);
+            }
+
+
+        }
+
+        private void CloseExtraProcesses()
+        {
+            if (!isMain) return;
+            var processes = System.Diagnostics.Process.GetProcessesByName("qToolbar");
+
+
+            foreach (var process in processes)
+            {
+
+                if (process.Id == System.Diagnostics.Process.GetCurrentProcess().Id && isMain)
+                    continue;
+
+                process.CloseMainWindow();
+            }
+
+            Array.Clear(processes, 0, processes.Length);
+        }
+
+        public static bool AllShortcutsOpened;
+
         public void Close()
         {
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
             var buttons = getButtons();
-            fileData.Save(buttons);
+            fileData.SaveButtons(buttons);
+
+            if (isMain)
+                fileData.SetQTBDefult();
 
             fileData.Dispose();
 
             SaveWindowSettings();
 
+            if (AllShortcutsOpened)
+            {
+                CloseAllShortcuts();
+            }
         }
 
         #region Settings
@@ -152,6 +312,14 @@ namespace qMain
                 settings.Save();
                 settings.Dispose();
 
+                if (!AllShortcutsOpened && settings.OpenAllShortcutFiles)
+                {
+                    //CheckIfRunAllShortcuts();
+                }
+                else
+                {
+                    //CloseExtraProcesses();
+                }
                 LoadSettings();
             }
         }
@@ -275,6 +443,8 @@ namespace qMain
             windowSettings.Load();
             if (!string.IsNullOrEmpty(windowSettings.background))
                 child.iBackground = windowSettings.background;
+            else
+                child.iBackground = "";
 
             child.iBackgroundColor = q.Common.ColorFromString(windowSettings.iBackgroundColor);
 
@@ -294,6 +464,8 @@ namespace qMain
         Point lastMousePosition;
         bool updateMousePosition;
         int newIndex;
+
+        public  bool isMain { get => child.isMain; set => child.isMain = value; }
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

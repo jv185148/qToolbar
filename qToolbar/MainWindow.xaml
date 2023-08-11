@@ -26,13 +26,13 @@
             </WrapPanel>
         </ScrollViewer>
         <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
-            <MenuItem Header="_File" Height="18" Width="54" >
+            <MenuItem Header="_File" Height="18"  >
                 <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
                 <MenuItem Header="_Save..." x:Name="mnuSaveShortcutCollection" Click="mnuSaveShortcutCollection_Click"/>
                 <Separator Height="1" />
                 <MenuItem Header="E_xit" x:Name="mnuExit" Click="MenuExit_Click"/>
             </MenuItem>
-            <MenuItem Header="_Tools" Height="18" Width="100">
+            <MenuItem Header="_Tools" Height="18">
                 <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
                 <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
                 <Separator Height="1"/>
@@ -41,13 +41,18 @@
                     <MenuItem Header="_Solid Color..." x:Name="mnuSetSolidBackground" Click="mnuSetSolidBackground_Click" />
                 </MenuItem>
             </MenuItem>
-
+            <MenuItem Header="_Shortcuts" x:Name="mnuShortcuts">
+                <MenuItem Header="Open all shortcuts" x:Name="mnuOpenAllShortcuts" Click="mnuOpenAllShortcuts_Click" />
+                <MenuItem Header="Close shortcut windows except main" x:Name="mnuCloseAllShortcuts" Click="mnuCloseAllShortcuts_Click" />
+                <Separator />
+                <MenuItem Header="Edit Shortcuts" x:Name="mnuEditShortcuts" Click="mnuEditShortcuts_Click" />
+            </MenuItem>
         </Menu>
         <StatusBar Height="35" VerticalAlignment="Bottom" Margin="0,0,0,0">
 
-            <StatusBarItem Name="itmShortcutCount" Content="x Shortcuts" />
+            <StatusBarItem Name="itmShortcutCount" Content="x Shortcuts" BorderBrush="Black" BorderThickness="1,0,0,0" />
 
-            <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open"/>
+            <StatusBarItem Name="itmDoubleClickToRun" Content="Click once to open" BorderBrush="Black" BorderThickness="1,0,0,0" />
 
         </StatusBar>
 
