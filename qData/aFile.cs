@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +22,8 @@ namespace qData
 
         public void Save()
         {
-            System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+            string temp = FileName + ".tmp";
+            System.IO.FileStream fs = new System.IO.FileStream(temp, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None);
             PrepData();
 
             StringBuilder sb = new StringBuilder();
@@ -40,6 +42,9 @@ namespace qData
             fs.Dispose();
 
             Array.Clear(buffer, 0, buffer.Length);
+            if (System.IO.File.Exists(FileName))
+                System.IO.File.Delete(FileName);
+            System.IO.File.Move(temp, FileName);
         }
 
 
@@ -50,7 +55,11 @@ namespace qData
                 goto Error;
             }
 
-            System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+            while (fileLocked())
+            {
+                //do nothing
+            }
+            System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
             fs.Close();
@@ -66,7 +75,7 @@ namespace qData
                 try
                 {
 
-                        FieldData[i].Data = lines[i].Split('=')[1];
+                    FieldData[i].Data = lines[i].Split('=')[1];
                 }
                 catch (Exception ex)
                 {
@@ -82,12 +91,49 @@ namespace qData
             return;
         }
 
+
+        private bool fileLocked()
+        {
+            bool isLocked = true;
+            bool secondTime = false;
+
+            System.IO.FileStream fs = null;
+            try
+            {
+                fs = System.IO.File.Open(FileName, System.IO.FileMode.Open);
+                return false;
+
+            }
+            catch (System.IO.IOException e)
+            {
+                var errorCode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
+                isLocked = errorCode == 32 || errorCode == 33;
+
+                if (!secondTime)
+                {
+                    secondTime = true;
+                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+
+                }
+            }
+            finally
+            {
+                fs?.Close();
+                fs?.Dispose();
+            }
+
+            return isLocked;
+        }
+
+
+
         public void Dispose()
         {
             childDispose();
         }
 
     }
+
 
     public class Field
     {

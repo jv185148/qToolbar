@@ -46,6 +46,7 @@ namespace qToolbar
                 _isMain = value;
                 //mnuShortcuts.IsEnabled = value;
                 mnuShortcuts.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+                //mnuSettings.IsEnabled = value ? true : false;
             }
         }
 

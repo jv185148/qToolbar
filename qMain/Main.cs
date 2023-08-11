@@ -43,6 +43,7 @@ namespace qMain
         }
 
 
+        System.IO.FileSystemWatcher fileWatcher;
 
         private qControls.qFileButton[] getButtons()
         {
@@ -61,6 +62,26 @@ namespace qMain
             this.child = child;
 
             (child as Window).PreviewMouseUp += Main_PreviewMouseUp;
+
+            fileWatcher = new System.IO.FileSystemWatcher(System.AppDomain.CurrentDomain.BaseDirectory);
+
+            fileWatcher.NotifyFilter = System.IO.NotifyFilters.LastWrite
+                                    | System.IO.NotifyFilters.CreationTime
+                                    | System.IO.NotifyFilters.Size;
+
+            fileWatcher.EnableRaisingEvents = true;
+            fileWatcher.Filter = "*";
+            fileWatcher.Changed += SettingsWatcher_Changed;
+        }
+
+        private void SettingsWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+            if (e.Name == "settings.ini")
+            {
+                Window w=(Window)child;
+                w.Dispatcher.Invoke(() => { LoadSettings(); });
+                //LoadSettings();
+            }
         }
 
         #region Load & Save
@@ -293,11 +314,11 @@ namespace qMain
 
                 if (!AllShortcutsOpened && settings.OpenAllShortcutFiles)
                 {
-                    CheckIfRunAllShortcuts();
+                    //CheckIfRunAllShortcuts();
                 }
                 else
                 {
-                    CloseExtraProcesses();
+                    //CloseExtraProcesses();
                 }
                 LoadSettings();
             }
