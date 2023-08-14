@@ -12,6 +12,12 @@ namespace q
 {
     public static class Common
     {
+        [DllImport("shell32.dll")]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, uint dwFlags);
+
+        [DllImport("shell32.dll")]
+        private static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, out IntPtr pidl, uint sfgaoIn, out uint psfgaoOut);
+
         public class IconX
         {
             [DllImport("shell32.dll", CharSet = CharSet.Auto)]
@@ -93,6 +99,7 @@ namespace q
                 return imageSource;
             }
         }
+
 
         public static ImageSource GetIconImage(string fileName)
         {
@@ -326,7 +333,24 @@ namespace q
             return result;
         }
 
+        public static void ExploreFile(string filePath)
+        {
+            string path = filePath.Substring(0, filePath.LastIndexOf("\\"));
+
+            SHParseDisplayName(System.IO.Path.GetFullPath(path), IntPtr.Zero, out IntPtr folder, 0, out uint psfgaoOut);
+            if (folder == IntPtr.Zero)
+            { return; }
+
+
+            SHParseDisplayName(System.IO.Path.GetFullPath(filePath), IntPtr.Zero, out IntPtr file, 0, out psfgaoOut);
+            if (file != IntPtr.Zero)
+            {
+                IntPtr[] files = { file };
+                SHOpenFolderAndSelectItems(folder, (uint)files.Length, files, 0);
+                Marshal.FreeCoTaskMem(file);
+            }
+            Marshal.FreeCoTaskMem(folder);
+        }
     }
 }
-
 

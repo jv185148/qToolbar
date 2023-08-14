@@ -78,7 +78,7 @@ namespace qMain
         {
             if (e.Name == "settings.ini")
             {
-                Window w=(Window)child;
+                Window w = (Window)child;
                 w.Dispatcher.Invoke(() => { LoadSettings(); });
                 //LoadSettings();
             }
@@ -465,7 +465,7 @@ namespace qMain
         bool updateMousePosition;
         int newIndex;
 
-        public  bool isMain { get => child.isMain; set => child.isMain = value; }
+        public bool isMain { get => child.isMain; set => child.isMain = value; }
 
         private void Main_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -666,10 +666,16 @@ namespace qMain
                   }
               });
 
+            MenuItem openLocation = new MenuItem() { Header = "Open File Location" };
+            openLocation.Click += ((object oSender, RoutedEventArgs e) =>
+              {
+                  Explore(button.TargetPath);
+              });
             cm.Items.Add(admin);
             cm.Items.Add(rename);
             cm.Items.Add(edit);
             cm.Items.Add(changeIcon);
+            cm.Items.Add(openLocation);
             cm.Items.Add(new Separator());
             cm.Items.Add(remove);
 
@@ -760,6 +766,11 @@ namespace qMain
                 };
             }
             p?.Start();
+        }
+
+        private void Explore(string filePath)
+        {
+            q.Common.ExploreFile(filePath);
         }
 
         #region Shortcut Collection

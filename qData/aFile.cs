@@ -58,6 +58,7 @@ namespace qData
             while (fileLocked())
             {
                 //do nothing
+                System.Threading.Thread.Sleep(100);
             }
             System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
             byte[] buffer = new byte[fs.Length];
