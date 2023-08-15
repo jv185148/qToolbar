@@ -41,9 +41,10 @@
                     <MenuItem Header="_Solid Color..." x:Name="mnuSetSolidBackground" Click="mnuSetSolidBackground_Click" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Shortcuts" x:Name="mnuShortcuts">
-                <MenuItem Header="Open all shortcuts" x:Name="mnuOpenAllShortcuts" Click="mnuOpenAllShortcuts_Click" />
-                <MenuItem Header="Close shortcut windows except main" x:Name="mnuCloseAllShortcuts" Click="mnuCloseAllShortcuts_Click" />
+            <MenuItem Header="_Shortcuts" x:Name="mnuShortcuts" >
+                <MenuItem Header="New Shortcut Collection" Click="mnuNewShortcutCollection_Click"/>
+                <MenuItem Header="Open All Shortcut Collections" x:Name="mnuOpenAllShortcuts" Click="mnuOpenAllShortcuts_Click" />
+                <MenuItem Header="Close Shortcut CollectionWindows" x:Name="mnuCloseAllShortcuts" Click="mnuCloseAllShortcuts_Click" />
                 <Separator />
                 <MenuItem Header="Edit Shortcuts" x:Name="mnuEditShortcuts" Click="mnuEditShortcuts_Click" />
             </MenuItem>

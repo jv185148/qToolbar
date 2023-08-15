@@ -85,7 +85,7 @@ namespace qToolbar
 
         private void FEditShortcutW_Closed(object sender, EventArgs e)
         {
-            //fEditShortcutW = null;
+            fEditShortcutW = null;
         }
 
         public int iShortcutCount
@@ -207,7 +207,7 @@ namespace qToolbar
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-          
+
             this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.main = new qMain.Main(this);
             main.Load();
@@ -253,6 +253,13 @@ namespace qToolbar
         }
 
 
+
+        #region mnuShortcuts
+        private void mnuNewShortcutCollection_Click(object sender, RoutedEventArgs e)
+        {
+            main.NewShortcutCollection();
+        }
+
         private void mnuOpenAllShortcuts_Click(object sender, RoutedEventArgs e)
         {
             main.OpenAllShortcuts();
@@ -267,6 +274,8 @@ namespace qToolbar
         {
             main.EditShortcuts();
         }
+
+        #endregion
 
         #endregion
 

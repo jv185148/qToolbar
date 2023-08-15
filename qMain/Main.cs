@@ -188,6 +188,28 @@ namespace qMain
             return collections.ToArray();
         }
 
+        #region Menu shortcut collections
+
+        public void NewShortcutCollection()
+        {
+            string fileName = q.Common.GetFreeFileName();
+            string file=collectionsPath+"\\"+ fileName;
+
+            System.IO.File.WriteAllText(file, "");
+            System.Threading.Thread.Sleep(200);
+
+            string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            System.Diagnostics.Process p = new System.Diagnostics.Process()
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo(exe)
+                {
+                    Arguments = fileName
+                }
+            };
+
+            p.Start();
+        }
+
         public void OpenAllShortcuts()
         {
 
@@ -218,6 +240,8 @@ namespace qMain
                 AllShortcutsOpened = true;
             }
         }
+
+ 
         public void CloseAllShortcuts()
         {
             CloseExtraProcesses();
@@ -253,6 +277,8 @@ namespace qMain
 
 
         }
+
+        #endregion
 
         private void CloseExtraProcesses()
         {

@@ -158,6 +158,57 @@ namespace q
             return bImage;
         }
 
+        public static string GetFreeFileName()
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + "\\ShortcutCollections";
+
+            if (!System.IO.Directory.Exists(path))
+                System.IO.Directory.CreateDirectory(path);
+
+
+
+            return _getFreeFile(path, "newCollection.qtb");
+        }
+
+        private static string _getFreeFile(string path, string lastFileName)
+        {
+
+            string ext = ".qtb";
+            string fileName = lastFileName.Replace(ext, "");
+            int number = 0;
+
+            var di = new System.IO.DirectoryInfo(path);
+
+            System.IO.FileInfo[] files = di.GetFiles("*.qtb");
+
+            bool contains = false;
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i].Name.Equals(lastFileName))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+
+            if (contains)
+            {
+                if (fileName.Contains("_"))
+                {
+                    int.TryParse(fileName.Split('_')[1], out number);
+                    fileName = fileName.Split('_')[0];
+                }
+
+                number++;
+                return _getFreeFile(path, string.Format("{0}_{1}{2}", fileName, number, ext));
+
+            }
+            else
+            {
+                return lastFileName;
+            }
+        }
+
         public static ImageSource GetFullImage(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
