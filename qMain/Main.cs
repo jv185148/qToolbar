@@ -140,6 +140,7 @@ namespace qMain
                 CheckIfRunAllShortcuts();
             }
 
+            child.UpdateTitle();
         }
 
         public void Save()

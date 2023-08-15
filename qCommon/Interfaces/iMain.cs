@@ -23,6 +23,8 @@ namespace qCommon.Interfaces
         System.Drawing.Color iBackgroundColor { get; set; }
         System.Windows.Point iSize { get; set; }
         System.Windows.Point iPosition { get; set; }
+
+        void UpdateTitle();
     }
 }
 

@@ -208,12 +208,16 @@ namespace qToolbar
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            UpdateTitle();
             this.main = new qMain.Main(this);
             main.Load();
 
         }
 
+        public void UpdateTitle()
+        {
+            this.Title = string.Format("qToolbar v {0} [ {1} ]",Assembly.GetExecutingAssembly().GetName().Version.ToString(),_shortcutFile);
+        }
         #region Menu events
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
