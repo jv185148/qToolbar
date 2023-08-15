@@ -65,6 +65,7 @@ namespace qToolbar
 
                 button.Click += Button_Click;
                 button.Margin = new Thickness(10);
+                button.Padding = new Thickness(10);
                 button.FontSize = 20d;
                 Panel.Children.Add(button);
             }
