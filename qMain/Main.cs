@@ -122,12 +122,12 @@ namespace qMain
                 button.DraggingDone += Button_DraggingDone;
             }
 
-            qData.SettingsFile settings = new qData.SettingsFile();
-            settings.Load();
-            child.iShortcutCount = getButtons().Length;
-            child.iDoubleClickToRun = !settings.RunWithSingleClick;
-            settings.Dispose();
-
+            //qData.SettingsFile settings = new qData.SettingsFile();
+            //settings.Load();
+            //child.iShortcutCount = getButtons().Length;
+            //child.iDoubleClickToRun = !settings.RunWithSingleClick;
+            //settings.Dispose();
+            LoadSettings();
 
             Array.Clear(buttons, 0, buttons.Length);
             fileData.Dispose();
@@ -336,6 +336,8 @@ namespace qMain
                 settings.RunWithSingleClick = ((qCommon.Interfaces.iSettings)window).RunWithSingleClick;
                 settings.OpenAllShortcutFiles = ((qCommon.Interfaces.iSettings)window).OpenAllShortcutFiles;
 
+                settings.ShowBorders = ((qCommon.Interfaces.iSettings)window).ShowBorders;
+                settings.ShowBorderForMain = ((qCommon.Interfaces.iSettings)window).ShowBorderForMain;
                 settings.Save();
                 settings.Dispose();
 
@@ -368,6 +370,11 @@ namespace qMain
 
             child.iShortcutCount = getButtons().Length;
             child.iDoubleClickToRun = !settings.RunWithSingleClick;
+            if (isMain)
+                child.iShowBorder = settings.ShowBorderForMain;
+            else
+                child.iShowBorder = settings.ShowBorders;
+            
 
             settings.Dispose();
         }

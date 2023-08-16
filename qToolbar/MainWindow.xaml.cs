@@ -178,6 +178,12 @@ namespace qToolbar
             fSettings = null;
         }
 
+        public bool iShowBorder
+        {
+            get => this.WindowStyle == WindowStyle.SingleBorderWindow;
+            set => this.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+        }
+
         #endregion
 
         #region Open TLB Shortcut Window
@@ -216,7 +222,7 @@ namespace qToolbar
 
         public void UpdateTitle()
         {
-            this.Title = string.Format("qToolbar v {0} [ {1} ]",Assembly.GetExecutingAssembly().GetName().Version.ToString(),_shortcutFile);
+            this.Title = string.Format("qToolbar v {0} [ {1} ]", Assembly.GetExecutingAssembly().GetName().Version.ToString(), _shortcutFile);
         }
         #region Menu events
 

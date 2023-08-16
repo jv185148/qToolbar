@@ -24,6 +24,8 @@ namespace qCommon.Interfaces
         System.Windows.Point iSize { get; set; }
         System.Windows.Point iPosition { get; set; }
 
+        bool iShowBorder { get; set; }
+
         void UpdateTitle();
     }
 }
