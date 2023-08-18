@@ -29,6 +29,8 @@ namespace qMain
             }
         }
 
+
+
         bool collectionSaved = false;
         string collectionsPath
         {
@@ -72,7 +74,11 @@ namespace qMain
             fileWatcher.EnableRaisingEvents = true;
             fileWatcher.Filter = "*";
             fileWatcher.Changed += SettingsWatcher_Changed;
+
+            child.RightClicked += Child_RightClicked;
+
         }
+
 
         private void SettingsWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
         {
@@ -194,7 +200,7 @@ namespace qMain
         public void NewShortcutCollection()
         {
             string fileName = q.Common.GetFreeFileName();
-            string file=collectionsPath+"\\"+ fileName;
+            string file = collectionsPath + "\\" + fileName;
 
             System.IO.File.WriteAllText(file, "");
             System.Threading.Thread.Sleep(200);
@@ -242,7 +248,7 @@ namespace qMain
             }
         }
 
- 
+
         public void CloseAllShortcuts()
         {
             CloseExtraProcesses();
@@ -374,7 +380,7 @@ namespace qMain
                 child.iShowBorder = settings.ShowBorderForMain;
             else
                 child.iShowBorder = settings.ShowBorders;
-            
+
 
             settings.Dispose();
         }
@@ -490,7 +496,7 @@ namespace qMain
             windowSettings.Dispose();
         }
 
-        #region MouseEvents
+        #region Mouse Drag Events
 
         qFileButton draggingButton;
         bool dragging;
@@ -630,7 +636,38 @@ namespace qMain
             button.Dispose();
         }
 
+        #region Click Events
+
+
+        private void Child_RightClicked(object sender)
+        {
+            // e.Handled = true;
+
+            ContextMenu cm = new ContextMenu();
+
+            MenuItem mnuBackgroundColor = new MenuItem() { Header = "Change Background Color" };
+            mnuBackgroundColor.Click += ((object s, RoutedEventArgs args) =>
+            {
+                SetBackgroundColor();
+            });
+
+            MenuItem mnuSettings = new MenuItem() { Header = "Settings..." };
+            mnuSettings.Click += ((object s, RoutedEventArgs args) =>
+              {
+                  ShowSettings();
+              });
+
+            cm.Items.Add(mnuBackgroundColor);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(mnuSettings);
+
+            cm.PlacementTarget = (UIElement)child;
+            cm.IsOpen = true;
+        }
+
+
         #region qButton Click Events
+
         private void Button_Clicked(object sender)
         {
 
@@ -642,8 +679,7 @@ namespace qMain
 
         public void Button_RightClicked(object sender)
         {
-            //MessageBox.Show("Button was right clicked");
-
+          
             qControls.qFileButton button = (qControls.qFileButton)sender;
 
             ContextMenu cm = new ContextMenu();
@@ -721,6 +757,8 @@ namespace qMain
 
             button.ForceSelected = true;
         }
+
+        #endregion
 
         #endregion
 

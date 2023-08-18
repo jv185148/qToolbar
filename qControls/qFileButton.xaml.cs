@@ -24,21 +24,14 @@ namespace qControls
 
         //public string Text { get => lblText.Content.ToString(); set => lblText.Content = value; }
 
-        private delegate void TimerDelegate();
-
-        public delegate void dClicked(object sender);
-
-        public event dClicked Clicked;
-
-        public delegate void dDragging(object sender);
-        public delegate void dDraggingDone(object sender, System.Windows.Input.MouseEventArgs e);
-
-        public event dDragging Dragging;
-        public event dDraggingDone DraggingDone;
 
 
-        public delegate void dRightClicked(object sender);
-        public event dRightClicked RightClicked;
+        public event qCommon.Events.dClicked Clicked;
+
+        public event qCommon.Events.dDragging Dragging;
+        public event qCommon.Events.dDraggingDone DraggingDone;
+
+        public event qCommon.Events.RightClickHandler RightClicked;
 
         private Brush _foreground;
         [Category("qToolbar")]
@@ -95,7 +88,7 @@ namespace qControls
         /// The full path of the target
         /// </summary>
         [Category("qToolbar")]
-        public string TargetPath { get => targetPath; set => targetPath = value=="NA"?"":value; }
+        public string TargetPath { get => targetPath; set => targetPath = value == "NA" ? "" : value; }
         [Category("qToolbar")]
         public string Arguments { get => args; set => args = value; }
 
@@ -271,7 +264,7 @@ namespace qControls
 
             BitmapImage bImage = new BitmapImage();
             bImage.BeginInit();
-            bImage.StreamSource= ms;
+            bImage.StreamSource = ms;
             bImage.CacheOption = BitmapCacheOption.OnLoad;
             bImage.EndInit();
             bImage.Freeze();
@@ -334,7 +327,11 @@ namespace qControls
                 Clicked?.Invoke(this);
             }
             else if (e.ChangedButton == MouseButton.Right)
+            {
+                e.Handled = true;
                 RightClicked?.Invoke(this);
+
+            }
         }
 
 
@@ -362,8 +359,7 @@ namespace qControls
 
             if (e.ChangedButton == MouseButton.Left && RunWithSingleClick && e.ClickCount == 1)
                 Clicked?.Invoke(this);
-            else if (e.ChangedButton == MouseButton.Right)
-                RightClicked?.Invoke(this);
+
 
             skip:
             // we can't execute click events as we were dragging.
@@ -399,7 +395,7 @@ namespace qControls
 
         public void LoadShortcut(qCommon.Interfaces.iShortcut shortcut)
         {
-        
+
             this.Description = shortcut.Description;
             this.TargetPath = shortcut.TargetPath;
             this.Arguments = shortcut.Arguments;
@@ -434,7 +430,7 @@ namespace qControls
             if (timerElapsedCount > 3)
             {
                 dragTimer.Stop();
-                TimerDelegate td = new TimerDelegate(Timer_SetDragging);
+                qCommon.Events.TimerDelegate td = new qCommon.Events.TimerDelegate(Timer_SetDragging);
                 Application.Current.Dispatcher.BeginInvoke(td);
 
             }

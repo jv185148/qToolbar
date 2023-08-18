@@ -23,6 +23,8 @@ namespace qToolbar
     /// </summary>
     public partial class MainWindow : Window, qCommon.Interfaces.iMain, IDisposable
     {
+        public event qCommon.Events.RightClickHandler RightClicked;
+
         private Main main;
 
         private bool _isMain;
@@ -35,6 +37,7 @@ namespace qToolbar
         int _shortcutCount;
         bool _doubleClickToRun;
         System.Drawing.Color _color;
+
 
         #region iMain properties
 
@@ -181,7 +184,18 @@ namespace qToolbar
         public bool iShowBorder
         {
             get => this.WindowStyle == WindowStyle.SingleBorderWindow;
-            set => this.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+            set
+            {
+                this.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+
+                if (!isMain)
+                {
+                    mnuMenu.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+                    this.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+
+                }
+
+            }
         }
 
         #endregion
@@ -324,6 +338,7 @@ namespace qToolbar
             dragging = false;
         }
 
+
         #endregion
 
         private void Window_Closed(object sender, EventArgs e)
@@ -336,6 +351,13 @@ namespace qToolbar
             this.main.Close();
         }
 
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                this?.RightClicked.Invoke(this);
+            }
+        }
 
     }
 }

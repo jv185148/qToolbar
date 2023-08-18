@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace qCommon.Interfaces
 {
+
     public interface iMain
     {
         bool isMain { get; set; }
@@ -27,7 +28,10 @@ namespace qCommon.Interfaces
         bool iShowBorder { get; set; }
 
         void UpdateTitle();
-    }
+
+        event Events.RightClickHandler RightClicked;
+
+     }
 }
 
 
