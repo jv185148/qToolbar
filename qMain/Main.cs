@@ -133,6 +133,7 @@ namespace qMain
             //child.iShortcutCount = getButtons().Length;
             //child.iDoubleClickToRun = !settings.RunWithSingleClick;
             //settings.Dispose();
+
             LoadSettings();
 
             Array.Clear(buttons, 0, buttons.Length);
@@ -159,7 +160,7 @@ namespace qMain
         }
 
 
-        #endregion
+        #endregion // Load & Save
 
         public void CheckIfRunAllShortcuts()
         {
@@ -217,6 +218,8 @@ namespace qMain
             p.Start();
         }
 
+
+
         public void OpenAllShortcuts()
         {
 
@@ -229,6 +232,9 @@ namespace qMain
                 {
                     if (isMain && files[i] == child.iShortcutFile)
                         continue;
+                    // improve by using entire array.
+                    if (IsOpen(files[i]))
+                        continue;
 
                     string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
 
@@ -240,12 +246,39 @@ namespace qMain
                     //    }
                     //};
                     p.StartInfo = new System.Diagnostics.ProcessStartInfo(exe);
-                    p.StartInfo.Arguments = files[i];
+                    p.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4}", files[i],
+                        child.iPosition.X, child.iPosition.Y, child.iSize.X, child.iSize.Y);
                     p.Start();
                 }
 
                 AllShortcutsOpened = true;
             }
+        }
+
+        private bool IsOpen(string shortcutFileName)
+        {
+            string shortName = shortcutFileName;
+            string exe = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+
+            if (shortName.Contains("\\"))
+                shortName = shortName.Substring(shortName.LastIndexOf("\\") + 1);
+            bool isOpen = false;
+
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(exe);
+            foreach (var process in processes)
+            {
+                string processName = process.MainWindowTitle.Substring(process.MainWindowTitle.IndexOf("[") + 1);
+                if (string.IsNullOrEmpty(processName)) continue;
+                processName = (processName.Substring(0, processName.IndexOf("]"))).Trim();
+
+                isOpen = processName.Equals(shortName);
+
+                if (isOpen) break;
+            }
+
+            return isOpen;
+
+
         }
 
 
@@ -285,7 +318,7 @@ namespace qMain
 
         }
 
-        #endregion
+        #endregion //Menu shortcut collections
 
         private void CloseExtraProcesses()
         {
@@ -386,7 +419,7 @@ namespace qMain
         }
 
 
-        #endregion
+        #endregion //Settings
 
         public void AddFiles(string[] data)
         {
@@ -488,12 +521,66 @@ namespace qMain
 
             child.iBackgroundColor = q.Common.ColorFromString(windowSettings.iBackgroundColor);
 
-            child.iPosition = windowSettings.iWindowPosition;
-            child.iSize = windowSettings.iWindowSize;
 
+            if (!moveChildWindowToLocation)
+            {
+                child.iPosition = windowSettings.iWindowPosition;
+                child.iSize = windowSettings.iWindowSize;
+            }
+            else
+            {
+                MoveChild(windowSettings.iWindowPosition, windowSettings.iWindowSize);
+            }
 
 
             windowSettings.Dispose();
+        }
+
+        bool moveChildWindowToLocation = false;
+        public void SetMoveWindowToLocation(bool value)
+        {
+            moveChildWindowToLocation = value;
+        }
+
+        private void MoveChild(Point position, Point size)
+        {
+            Window window = (Window)child;
+
+            child.iSize = size;
+
+            while (window.Left != position.X || window.Top != position.Y || window.Width != size.X || window.Height != size.Y)
+            {
+                if (window.Opacity < 1d)
+                    window.Opacity += 0.1d;
+
+                double amount = 0d;
+                double moveAmount = 0.5d;
+                if (window.Left < position.X)
+                {
+                    amount = position.X - window.Left > moveAmount ? moveAmount : position.X - window.Left;
+
+                }
+                else if (window.Left > position.X)
+                {
+                    amount = window.Left - position.X > moveAmount ? moveAmount : window.Left - position.X;
+                    amount *= -1;
+                }
+                window.Left += amount;
+
+                amount = 0d;
+                if (window.Top < position.Y)
+                {
+                    amount = position.Y - window.Top > moveAmount ? moveAmount : position.Y - window.Top;
+                }
+                else if (window.Top > position.Y)
+                {
+                    amount = window.Top - position.Y > moveAmount ? moveAmount : window.Top - position.Y;
+                    amount *= -1;
+                }
+                window.Top += amount;
+            }
+
+            child.iPosition = position;
         }
 
         #region Mouse Drag Events
@@ -608,7 +695,7 @@ namespace qMain
             }
         }
 
-        #endregion
+        #endregion //Mouse Drag Events
 
         public void Clear()
         {
@@ -679,7 +766,7 @@ namespace qMain
 
         public void Button_RightClicked(object sender)
         {
-          
+
             qControls.qFileButton button = (qControls.qFileButton)sender;
 
             ContextMenu cm = new ContextMenu();
@@ -758,9 +845,9 @@ namespace qMain
             button.ForceSelected = true;
         }
 
-        #endregion
+        #endregion //qButton Click Events
 
-        #endregion
+        #endregion //Click Events
 
         private void Execute(qFileButton button)
         {
@@ -886,7 +973,7 @@ namespace qMain
 
         }
 
-        #endregion
+        #endregion //Shortcut Collection
 
         public void SetBackground()
         {

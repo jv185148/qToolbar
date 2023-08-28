@@ -210,6 +210,19 @@ namespace qToolbar
 
         #endregion
 
+        bool doAnimSlide = false;
+        public void SetStartup(Point position, Point size)
+        {
+            this.Left = position.X;
+            this.Top = position.Y;
+            this.Width = size.X;
+            this.Height = size.Y;
+
+            this.Opacity = 0d;
+
+            doAnimSlide = true;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -230,9 +243,15 @@ namespace qToolbar
 
             UpdateTitle();
             this.main = new qMain.Main(this);
+            if (doAnimSlide)
+            {
+                main.SetMoveWindowToLocation(true);
+            }
             main.Load();
 
+
         }
+
 
         public void UpdateTitle()
         {

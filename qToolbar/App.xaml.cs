@@ -20,11 +20,14 @@ namespace qToolbar
             string path = System.AppDomain.CurrentDomain.BaseDirectory;
             string collectionsPath = path + "\\ShortcutCollections\\";
 
+           
+
             qData.SettingsFile settings = new qData.SettingsFile();
             settings.Load();
 
             bool openAllShortcuts = settings.OpenAllShortcutFiles;
             settings.Dispose();
+
 
             bool setMain = false;
             if (e.Args.Length == 0)
@@ -34,6 +37,7 @@ namespace qToolbar
                 qMain.Main.AllShortcutsOpened = false;
             }
 
+
             if (e.Args.Length > 0)
             {
                 if (System.IO.File.Exists(collectionsPath + e.Args[0]))
@@ -41,12 +45,26 @@ namespace qToolbar
             }
 
             window.iShortcutFile = file;
+           
             window.isMain = setMain;
-
-
             MainWindow.Show();
 
-        
+            bool performSlide = false;
+            if (!window.isMain && performSlide)
+            {
+                if (e.Args.Length > 1)
+                {
+                    double x, y;
+                    double w, h;
+                    double.TryParse(e.Args[1], out x);
+                    double.TryParse(e.Args[2], out y);
+                    double.TryParse(e.Args[3], out w);
+                    double.TryParse(e.Args[4], out h);
+
+                    window.SetStartup(new Point(x, y), new Point(w, h));
+                }
+            }
+
         }
 
 
