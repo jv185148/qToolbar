@@ -157,7 +157,7 @@ namespace qToolbar
             }
         }
 
-        #endregion
+        #endregion //iMain properties
 
         #region Settings.
 
@@ -257,6 +257,7 @@ namespace qToolbar
         {
             this.Title = string.Format("qToolbar v {0} [ {1} ]", Assembly.GetExecutingAssembly().GetName().Version.ToString(), _shortcutFile);
         }
+
         #region Menu events
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -318,9 +319,9 @@ namespace qToolbar
             main.EditShortcuts();
         }
 
-        #endregion
+        #endregion //mnuShortcuts
 
-        #endregion
+        #endregion //Menu events
 
         #region Drag events
 
@@ -358,7 +359,7 @@ namespace qToolbar
         }
 
 
-        #endregion
+        #endregion // Drag events
 
         private void Window_Closed(object sender, EventArgs e)
         {
