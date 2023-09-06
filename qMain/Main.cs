@@ -759,9 +759,32 @@ namespace qMain
                   ShowSettings();
               });
 
+            MenuItem mnuOpen = new MenuItem() { Header = "Open..." };
+            mnuOpen.Click += ((object s, RoutedEventArgs args) =>
+              {
+                  OpenShortcutCollection();
+              });
+
+            MenuItem mnuSave = new MenuItem() { Header = "Save..." };
+            mnuSave.Click += ((object s, RoutedEventArgs args) =>
+             {
+                 SaveShortcutCollection();
+             });
+
+            MenuItem mnuExit = new MenuItem() { Header = "E_xit" };
+            mnuExit.Click+=((object s, RoutedEventArgs args)=>
+            {
+                (child as Window).Close();
+            });
+
+            cm.Items.Add(mnuOpen);
+            cm.Items.Add(mnuSave);
+            cm.Items.Add(new Separator());
             cm.Items.Add(mnuBackgroundColor);
             cm.Items.Add(new Separator());
             cm.Items.Add(mnuSettings);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(mnuExit);
 
             cm.PlacementTarget = (UIElement)child;
             cm.IsOpen = true;
