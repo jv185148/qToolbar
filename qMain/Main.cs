@@ -153,6 +153,7 @@ namespace qMain
         {
 
             Window window = (Window)child.iSettingsForm;
+            (child as Window).Opacity = 0.4d;
             if (window.ShowDialog() == true)
             {
 
@@ -179,6 +180,7 @@ namespace qMain
                 }
                 LoadSettings();
             }
+            (child as Window).Opacity = 1d;
         }
 
         private void LoadSettings()
@@ -745,18 +747,22 @@ namespace qMain
         {
             // e.Handled = true;
 
+            bool dontLightUp = false;
             ContextMenu cm = new ContextMenu();
 
             MenuItem mnuBackgroundColor = new MenuItem() { Header = "Change Background Color" };
             mnuBackgroundColor.Click += ((object s, RoutedEventArgs args) =>
             {
                 SetBackgroundColor();
+
             });
 
             MenuItem mnuSettings = new MenuItem() { Header = "Settings..." };
             mnuSettings.Click += ((object s, RoutedEventArgs args) =>
               {
+                  dontLightUp = true;
                   ShowSettings();
+                  dontLightUp = false;
               });
 
             MenuItem mnuOpen = new MenuItem() { Header = "Open..." };
@@ -772,11 +778,16 @@ namespace qMain
              });
 
             MenuItem mnuExit = new MenuItem() { Header = "E_xit" };
-            mnuExit.Click+=((object s, RoutedEventArgs args)=>
-            {
-                (child as Window).Close();
-            });
+            mnuExit.Click += ((object s, RoutedEventArgs args) =>
+              {
+                  (child as Window).Close();
+              });
 
+            cm.Closed += ((object o, RoutedEventArgs args) =>
+             {
+                 if (!dontLightUp)
+                     (child as Window).Opacity = 1d;
+             });
             cm.Items.Add(mnuOpen);
             cm.Items.Add(mnuSave);
             cm.Items.Add(new Separator());
@@ -788,6 +799,8 @@ namespace qMain
 
             cm.PlacementTarget = (UIElement)child;
             cm.IsOpen = true;
+
+            (child as Window).Opacity = 0.4;
         }
 
 
@@ -866,6 +879,11 @@ namespace qMain
               {
                   Explore(button.TargetPath);
               });
+
+            cm.Closed += ((object o, RoutedEventArgs args) =>
+              {
+                  (child as Window).Opacity = 1d;
+              });
             cm.Items.Add(admin);
             cm.Items.Add(rename);
             cm.Items.Add(edit);
@@ -878,7 +896,7 @@ namespace qMain
 
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
-
+            (child as Window).Opacity = 0.4d;
 
             button.ForceSelected = true;
         }
