@@ -119,6 +119,11 @@ namespace qData
             {
                 qtbFile = GetQTBDefault();
             }
+
+
+
+            if (!System.IO.File.Exists(path + "\\" + qtbFile))return  new qControls.qFileButton[0];
+
             System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
@@ -232,6 +237,10 @@ namespace qData
         {
             List<string> collections = new List<string>();
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
+
+            if (!System.IO.Directory.Exists(path))
+                System.IO.Directory.CreateDirectory(path);
+            
             foreach (var file in di.GetFiles("*.qtb"))
             {
                 collections.Add(file.Name);

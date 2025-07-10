@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -12,6 +13,12 @@ namespace q
 {
     public static class Common
     {
+        [DllImport("shell32.dll")]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlFolder, uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, uint dwFlags);
+
+        [DllImport("shell32.dll")]
+        private static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, out IntPtr pidl, uint sfgaoIn, out uint psfgaoOut);
+
         public class IconX
         {
             [DllImport("shell32.dll", CharSet = CharSet.Auto)]
@@ -94,6 +101,7 @@ namespace q
             }
         }
 
+
         public static ImageSource GetIconImage(string fileName)
         {
             System.Drawing.Image image = new System.Drawing.Bitmap(fileName);
@@ -149,6 +157,57 @@ namespace q
             bImage.Freeze();
 
             return bImage;
+        }
+
+        public static string GetFreeFileName()
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + "\\ShortcutCollections";
+
+            if (!System.IO.Directory.Exists(path))
+                System.IO.Directory.CreateDirectory(path);
+
+
+
+            return _getFreeFile(path, "newCollection.qtb");
+        }
+
+        private static string _getFreeFile(string path, string lastFileName)
+        {
+
+            string ext = ".qtb";
+            string fileName = lastFileName.Replace(ext, "");
+            int number = 0;
+
+            var di = new System.IO.DirectoryInfo(path);
+
+            System.IO.FileInfo[] files = di.GetFiles("*.qtb");
+
+            bool contains = false;
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i].Name.Equals(lastFileName))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+
+            if (contains)
+            {
+                if (fileName.Contains("_"))
+                {
+                    int.TryParse(fileName.Split('_')[1], out number);
+                    fileName = fileName.Split('_')[0];
+                }
+
+                number++;
+                return _getFreeFile(path, string.Format("{0}_{1}{2}", fileName, number, ext));
+
+            }
+            else
+            {
+                return lastFileName;
+            }
         }
 
         public static ImageSource GetFullImage(string fileName)
@@ -302,7 +361,7 @@ namespace q
             if (fileName.Contains("."))
             {
                 string ext = fileName.Substring(fileName.LastIndexOf("."));
-                result = ext.Length == 4;
+                result = ext.Length == 4||ext.Length==5; // Virtual box Extension is 4
             }
             return result;
         }
@@ -326,7 +385,24 @@ namespace q
             return result;
         }
 
+        public static void ExploreFile(string filePath)
+        {
+            string path = filePath.Substring(0, filePath.LastIndexOf("\\"));
+
+            SHParseDisplayName(System.IO.Path.GetFullPath(path), IntPtr.Zero, out IntPtr folder, 0, out uint psfgaoOut);
+            if (folder == IntPtr.Zero)
+            { return; }
+
+
+            SHParseDisplayName(System.IO.Path.GetFullPath(filePath), IntPtr.Zero, out IntPtr file, 0, out psfgaoOut);
+            if (file != IntPtr.Zero)
+            {
+                IntPtr[] files = { file };
+                SHOpenFolderAndSelectItems(folder, (uint)files.Length, files, 0);
+                Marshal.FreeCoTaskMem(file);
+            }
+            Marshal.FreeCoTaskMem(folder);
+        }
     }
 }
-
 

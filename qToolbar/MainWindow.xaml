@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:qToolbar"
         xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing" MouseDown="Window_MouseDown">
 
     <Grid Name="grid" DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
         <Image Name="imgBackground" Margin="0,0"/>
@@ -25,7 +25,7 @@
                 </b:Interaction.Behaviors>
             </WrapPanel>
         </ScrollViewer>
-        <Menu Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
+        <Menu Name="mnuMenu" Height="18" VerticalAlignment="Top" Margin="0,0,-0.4,0">
             <MenuItem Header="_File" Height="18"  >
                 <MenuItem Header="Open..." x:Name="mnuOpenShortcutCollection" Click="mnuOpenShortcutCollection_Click"/>
                 <MenuItem Header="_Save..." x:Name="mnuSaveShortcutCollection" Click="mnuSaveShortcutCollection_Click"/>
@@ -36,14 +36,15 @@
                 <MenuItem Header="_Clear Items" x:Name="mnuClearItems" Click="mnuClearItems_Click" />
                 <MenuItem Header="_Settings" x:Name="mnuSettings" Click="mnuSettings_Click" />
                 <Separator Height="1"/>
-                <MenuItem Header="Background">
+                <MenuItem Header="Background" >
                     <MenuItem Header="_Background Image..." x:Name="mnuSetBackgroundImage" Click="mnuSetBackground_Click" />
                     <MenuItem Header="_Solid Color..." x:Name="mnuSetSolidBackground" Click="mnuSetSolidBackground_Click" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Shortcuts" x:Name="mnuShortcuts">
-                <MenuItem Header="Open all shortcuts" x:Name="mnuOpenAllShortcuts" Click="mnuOpenAllShortcuts_Click" />
-                <MenuItem Header="Close shortcut windows except main" x:Name="mnuCloseAllShortcuts" Click="mnuCloseAllShortcuts_Click" />
+            <MenuItem Header="_Shortcuts" x:Name="mnuShortcuts" >
+                <MenuItem Header="New Shortcut Collection" Click="mnuNewShortcutCollection_Click"/>
+                <MenuItem Header="Open All Shortcut Collections" x:Name="mnuOpenAllShortcuts" Click="mnuOpenAllShortcuts_Click" />
+                <MenuItem Header="Close Shortcut CollectionWindows" x:Name="mnuCloseAllShortcuts" Click="mnuCloseAllShortcuts_Click" />
                 <Separator />
                 <MenuItem Header="Edit Shortcuts" x:Name="mnuEditShortcuts" Click="mnuEditShortcuts_Click" />
             </MenuItem>

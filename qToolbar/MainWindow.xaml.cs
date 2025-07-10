@@ -23,6 +23,8 @@ namespace qToolbar
     /// </summary>
     public partial class MainWindow : Window, qCommon.Interfaces.iMain, IDisposable
     {
+        public event qCommon.Events.RightClickHandler RightClicked;
+
         private Main main;
 
         private bool _isMain;
@@ -35,6 +37,7 @@ namespace qToolbar
         int _shortcutCount;
         bool _doubleClickToRun;
         System.Drawing.Color _color;
+
 
         #region iMain properties
 
@@ -85,7 +88,7 @@ namespace qToolbar
 
         private void FEditShortcutW_Closed(object sender, EventArgs e)
         {
-            //fEditShortcutW = null;
+            fEditShortcutW = null;
         }
 
         public int iShortcutCount
@@ -154,7 +157,7 @@ namespace qToolbar
             }
         }
 
-        #endregion
+        #endregion //iMain properties
 
         #region Settings.
 
@@ -178,6 +181,23 @@ namespace qToolbar
             fSettings = null;
         }
 
+        public bool iShowBorder
+        {
+            get => this.WindowStyle == WindowStyle.SingleBorderWindow;
+            set
+            {
+                this.WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+
+                if (!isMain)
+                {
+                    mnuMenu.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+                    this.ResizeMode = value ? ResizeMode.CanResize : ResizeMode.NoResize;
+
+                }
+
+            }
+        }
+
         #endregion
 
         #region Open TLB Shortcut Window
@@ -189,6 +209,19 @@ namespace qToolbar
         }
 
         #endregion
+
+        bool doAnimSlide = false;
+        public void SetStartup(Point position, Point size)
+        {
+            this.Left = position.X;
+            this.Top = position.Y;
+            this.Width = size.X;
+            this.Height = size.Y;
+
+            this.Opacity = 0d;
+
+            doAnimSlide = true;
+        }
 
         public MainWindow()
         {
@@ -207,11 +240,22 @@ namespace qToolbar
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-          
-            this.Title = "qToolbar " + "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            UpdateTitle();
             this.main = new qMain.Main(this);
+            if (doAnimSlide)
+            {
+                main.SetMoveWindowToLocation(true);
+            }
             main.Load();
 
+
+        }
+
+
+        public void UpdateTitle()
+        {
+            this.Title = string.Format("qToolbar v {0} [ {1} ]", Assembly.GetExecutingAssembly().GetName().Version.ToString(), _shortcutFile);
         }
 
         #region Menu events
@@ -253,6 +297,13 @@ namespace qToolbar
         }
 
 
+
+        #region mnuShortcuts
+        private void mnuNewShortcutCollection_Click(object sender, RoutedEventArgs e)
+        {
+            main.NewShortcutCollection();
+        }
+
         private void mnuOpenAllShortcuts_Click(object sender, RoutedEventArgs e)
         {
             main.OpenAllShortcuts();
@@ -268,7 +319,9 @@ namespace qToolbar
             main.EditShortcuts();
         }
 
-        #endregion
+        #endregion //mnuShortcuts
+
+        #endregion //Menu events
 
         #region Drag events
 
@@ -305,7 +358,8 @@ namespace qToolbar
             dragging = false;
         }
 
-        #endregion
+
+        #endregion // Drag events
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -317,6 +371,13 @@ namespace qToolbar
             this.main.Close();
         }
 
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                this?.RightClicked.Invoke(this);
+            }
+        }
 
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace qCommon.Interfaces
 {
+
     public interface iMain
     {
         bool isMain { get; set; }
@@ -23,7 +24,14 @@ namespace qCommon.Interfaces
         System.Drawing.Color iBackgroundColor { get; set; }
         System.Windows.Point iSize { get; set; }
         System.Windows.Point iPosition { get; set; }
-    }
+
+        bool iShowBorder { get; set; }
+
+        void UpdateTitle();
+
+        event Events.RightClickHandler RightClicked;
+
+     }
 }
 
 

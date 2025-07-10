@@ -55,11 +55,21 @@ namespace qData
                 goto Error;
             }
 
+        retryRead:
             while (fileLocked())
             {
                 //do nothing
+                System.Threading.Thread.Sleep(100);
             }
-            System.IO.FileStream fs = new System.IO.FileStream(FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
+            System.IO.FileStream fs = null;
+            try
+            {
+                fs = new System.IO.FileStream(FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
+            }
+            catch (System.IO.IOException io)
+            {
+                goto retryRead;
+            }
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
             fs.Close();

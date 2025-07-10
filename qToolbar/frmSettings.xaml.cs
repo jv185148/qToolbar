@@ -28,6 +28,8 @@ namespace qToolbar
 
         public bool OpenAllShortcutFiles { get => (bool)chkOpenAllShortcuts.IsChecked; set => chkOpenAllShortcuts.IsChecked = value; }
 
+        public bool ShowBorders { get; set; }
+        public bool ShowBorderForMain { get; set; }
 
         public frmSettings()
         {
@@ -46,6 +48,8 @@ namespace qToolbar
             SelectColor = btnSelectColor.Background;
             ForegroundSelectColor = btnForegroundSelectColor.Foreground;
 
+            ShowBorders = chkShowBorder.IsChecked == true;
+            ShowBorderForMain = chkShowBorderForMain.IsChecked == true;
             this.DialogResult = true;
             //this.Close();
         }
@@ -107,6 +111,9 @@ namespace qToolbar
             btnSelectColor.Background = settings.SelectColor;
             btnForegroundSelectColor.Foreground = settings.ForegroundSelectColor;
             RunWithSingleClick = settings.RunWithSingleClick;
+
+            chkShowBorder.IsChecked = settings.ShowBorders;
+            chkShowBorderForMain.IsChecked = settings.ShowBorderForMain;
 
             btnGame.TextForeground = btnForecolor.Foreground;
             btnGame.SelectedBrush = btnSelectColor.Background;

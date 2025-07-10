@@ -24,6 +24,11 @@
                     <CheckBox Name="chkOpenAllShortcuts" VerticalAlignment="Top" Margin="8,100,0,0">
                         <TextBlock>Open all shortcut windows on startup</TextBlock>
                     </CheckBox>
+                    <CheckBox Name="chkShowBorder" Content="Show borders for other Shortcut Collection windows"
+                              HorizontalAlignment="Left" Margin="8,120,0,0" VerticalAlignment="Top"/>
+                    <CheckBox Name="chkShowBorderForMain" Content="Show border for main Shortcut Collection window" 
+                              HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="8,140,0,0"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Appearance">

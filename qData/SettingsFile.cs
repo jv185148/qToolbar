@@ -21,12 +21,16 @@ namespace qData
         Field fForegroundSelect;
         Field fRunWithSingleClick;
         Field fOpenAllShortcuts;
+        Field fShowBorder;
+        Field fShowBorderForMain;
 
         public Brush SelectColor { get; set; }
         public Brush ForegroundSelectColor { get; set; }
         public Brush ForegroundColor { get; set; }
         public bool RunWithSingleClick { get; set; }
         public bool OpenAllShortcutFiles { get; set; }
+        public bool ShowBorders { get; set; }
+        public bool ShowBorderForMain { get; set; }
 
         public SettingsFile()
         {
@@ -35,13 +39,17 @@ namespace qData
             fForegroundSelect = new Field() { Title = "ForegroundSelect" };
             fRunWithSingleClick = new Field() { Title = "RunWithSingleClick" };
             fOpenAllShortcuts = new Field() { Title = "OpenAllShortcutsOnStartup" };
+            fShowBorder = new Field() { Title = "ShowBorder" };
+            fShowBorderForMain = new Field() { Title = "ShowBorderMain" };
 
-            fields = new Field[5];
+            fields = new Field[7];
             fields[0] = fTileColor;
             fields[1] = fForeground;
             fields[2] = fForegroundSelect;
             fields[3] = fRunWithSingleClick;
             fields[4] = fOpenAllShortcuts;
+            fields[5] = fShowBorder;
+            fields[6] = fShowBorderForMain;
         }
 
         protected override void PrepData()
@@ -51,6 +59,8 @@ namespace qData
             fForegroundSelect.Data = ForegroundSelectColor.ToString();
             fRunWithSingleClick.Data = RunWithSingleClick.ToString();
             fOpenAllShortcuts.Data = OpenAllShortcutFiles.ToString();
+            fShowBorder.Data = ShowBorders.ToString();
+            fShowBorderForMain.Data = ShowBorderForMain.ToString();
         }
 
         protected override void LoadData()
@@ -76,6 +86,13 @@ namespace qData
             bool.TryParse(fOpenAllShortcuts.Data, out openAllShortcuts);
             OpenAllShortcutFiles = openAllShortcuts;
 
+            bool value;
+            bool.TryParse(fShowBorder.Data,out value);
+            ShowBorders = value;
+
+            bool.TryParse(fShowBorderForMain.Data, out value);
+            ShowBorderForMain = value;
+
             b = null;
             bc = null;
         }
@@ -89,6 +106,9 @@ namespace qData
             RunWithSingleClick = true;
 
             OpenAllShortcutFiles = true;
+
+            ShowBorders = true;
+            ShowBorderForMain = true;
         }
 
         protected override void childDispose()
