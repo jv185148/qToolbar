@@ -361,7 +361,7 @@ namespace q
             if (fileName.Contains("."))
             {
                 string ext = fileName.Substring(fileName.LastIndexOf("."));
-                result = ext.Length == 4;
+                result = ext.Length == 4||ext.Length==5; // Virtual box Extension is 4
             }
             return result;
         }

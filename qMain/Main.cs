@@ -86,6 +86,8 @@ namespace qMain
             qData.FileData fileData = new qData.FileData(child.iShortcutFile);
 
 
+            LoadWindowSettings();
+
             qFileButton[] buttons = null;
             try
             {
@@ -129,7 +131,6 @@ namespace qMain
             fileData.Dispose();
 
 
-            LoadWindowSettings();
 
             if (isMain)
             {
@@ -230,6 +231,15 @@ namespace qMain
         {
             qData.WindowSettings windowSettings = new qData.WindowSettings(child.iShortcutFile);
             windowSettings.Load();
+
+            Window window = (Window)child;
+
+
+            //System.Threading.Thread.Sleep(1000);
+
+            System.Windows.Forms.Application.DoEvents();
+
+
             if (!string.IsNullOrEmpty(windowSettings.background))
                 child.iBackground = windowSettings.background;
             else
@@ -248,10 +258,8 @@ namespace qMain
                 MoveChild(windowSettings.iWindowPosition, windowSettings.iWindowSize);
             }
 
-
             windowSettings.Dispose();
         }
-
 
         public void SetBackground()
         {

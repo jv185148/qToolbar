@@ -47,7 +47,10 @@ namespace qToolbar
             window.iShortcutFile = file;
            
             window.isMain = setMain;
+            MainWindow.Top = -3000;
+
             MainWindow.Show();
+            
 
             bool performSlide = false;
             if (!window.isMain && performSlide)

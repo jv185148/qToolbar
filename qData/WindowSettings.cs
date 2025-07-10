@@ -18,6 +18,8 @@ namespace qData
         public string iBackgroundColor { get; set; }
         #endregion
 
+        const string DEFAULT_FILE = "default.qtb";
+
         string appPath = System.AppDomain.CurrentDomain.BaseDirectory;
 
         string _fileName;
@@ -38,6 +40,15 @@ namespace qData
 
         public WindowSettings(string fileName)
         {
+            if (fileName == DEFAULT_FILE)
+                fileName = ReturnDefaultFileData();
+
+            if (fileName == "")
+            {
+                LoadDefaults();
+                return;
+            }
+
             fields = new Field[4];
 
             _fileName = appPath + "\\ShortcutCollections\\" + fileName.Replace(".qtb", ".dat");
@@ -103,6 +114,20 @@ namespace qData
             iWindowSize = new System.Windows.Point(400, 400);
         }
 
+        protected string ReturnDefaultFileData()
+        {
+            string s = "";
 
+            if (System.IO.File.Exists(DEFAULT_FILE))
+            {
+                s = System.IO.File.ReadAllText(DEFAULT_FILE);
+                s = s.Substring(s.LastIndexOf("\\")+1);
+            }
+
+
+
+            return s;
+
+        }
     }
 }
