@@ -334,7 +334,11 @@ namespace q
 
             if (!value.StartsWith("~"))
                 value = "~ " + value.ToUpper();
-
+            else
+            {
+                if(!value.StartsWith("~ "))
+                        value = value.Replace("~", "~ ");
+            }
             
 
             switch (value)
