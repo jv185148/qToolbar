@@ -1,4 +1,5 @@
-﻿using qCommon.Interfaces;
+﻿using qCommon;
+using qCommon.Interfaces;
 using qMain;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,27 @@ namespace qToolbar
     public partial class MainWindow : Window, qCommon.Interfaces.iMain, IDisposable
     {
         public event qCommon.Events.RightClickHandler RightClicked;
+        public event Events.WindowCloseEvent WaitOnOpacityRequest;
+
+        frmCompatDialog frmCompatDialog;
+        public qCommon.Interfaces.iCompatDialog compatDialog
+        {
+            get
+            {
+                if (frmCompatDialog == null)
+                {
+                    frmCompatDialog = new frmCompatDialog();
+                    frmCompatDialog.Closed += FrmCompatDialog_Closed;
+                }
+
+                return frmCompatDialog;
+            }
+        }
+
+        private void FrmCompatDialog_Closed(object sender, EventArgs e)
+        {
+            frmCompatDialog = null;
+        }
 
         private Main main;
 
@@ -237,6 +259,27 @@ namespace qToolbar
 
         public System.Windows.Controls.Grid iGrid => grid;
 
+        #region Opacity
+
+        public double lowOpacityValue { get; set; }
+        public bool OpacityWait { get; set; }
+
+        public void RequestOpacityChange_WaitOn(Window window)
+        {
+            WaitOnOpacityRequest?.Invoke(window);
+        }
+
+        public void SetLowOpacity()
+        {
+            this.Opacity = lowOpacityValue;
+        }
+        public void SetNormalOpacity()
+        {
+            if (!OpacityWait)
+                this.Opacity = 1d;
+        }
+
+        #endregion //Opacity
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -378,6 +421,7 @@ namespace qToolbar
                 this?.RightClicked.Invoke(this);
             }
         }
+
 
     }
 }

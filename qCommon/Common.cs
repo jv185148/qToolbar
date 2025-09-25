@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +21,20 @@ namespace q
 
         [DllImport("shell32.dll")]
         private static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, out IntPtr pidl, uint sfgaoIn, out uint psfgaoOut);
+
+        public enum CompatFlags
+        {
+            none,
+            Win95,
+            Win98,
+            XP2,
+            XP3,
+            Vista,
+            Vista1,
+            Vista2,
+            Win7,
+            Win8
+        }
 
         public class IconX
         {
@@ -159,56 +176,7 @@ namespace q
             return bImage;
         }
 
-        public static string GetFreeFileName()
-        {
-            string path = AppDomain.CurrentDomain.BaseDirectory + "\\ShortcutCollections";
 
-            if (!System.IO.Directory.Exists(path))
-                System.IO.Directory.CreateDirectory(path);
-
-
-
-            return _getFreeFile(path, "newCollection.qtb");
-        }
-
-        private static string _getFreeFile(string path, string lastFileName)
-        {
-
-            string ext = ".qtb";
-            string fileName = lastFileName.Replace(ext, "");
-            int number = 0;
-
-            var di = new System.IO.DirectoryInfo(path);
-
-            System.IO.FileInfo[] files = di.GetFiles("*.qtb");
-
-            bool contains = false;
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (files[i].Name.Equals(lastFileName))
-                {
-                    contains = true;
-                    break;
-                }
-            }
-
-            if (contains)
-            {
-                if (fileName.Contains("_"))
-                {
-                    int.TryParse(fileName.Split('_')[1], out number);
-                    fileName = fileName.Split('_')[0];
-                }
-
-                number++;
-                return _getFreeFile(path, string.Format("{0}_{1}{2}", fileName, number, ext));
-
-            }
-            else
-            {
-                return lastFileName;
-            }
-        }
 
         public static ImageSource GetFullImage(string fileName)
         {
@@ -230,19 +198,26 @@ namespace q
             return bitmap;
         }
 
-
-        public static System.Windows.Media.Color ConvertColor(System.Drawing.Color color)
+        public static BitmapImage GetResourceImage(System.Drawing.Bitmap bitmap)
         {
-            System.Windows.Media.Color retColor = new System.Windows.Media.Color();
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
 
-            retColor.A = color.A;
-            retColor.R = color.R;
-            retColor.G = color.G;
-            retColor.B = color.B;
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            BitmapImage bImage = new BitmapImage();
+            bImage.BeginInit();
+            bImage.StreamSource = ms;
+            bImage.CacheOption = BitmapCacheOption.OnLoad;
+            bImage.EndInit();
+            bImage.Freeze();
 
 
-            return retColor;
+            bitmap.Dispose();
+
+            return bImage;
         }
+
+        #region Steam
 
         public static string GetSteamGameIcon(string file)
         {
@@ -301,6 +276,10 @@ namespace q
 
         }
 
+        #endregion Steam
+
+        #region Shortcut Flags
+
         public static bool GetAdminFlag(string file)
         {
             bool result = false;
@@ -312,6 +291,212 @@ namespace q
             key.Close();
             key.Dispose();
             return result;
+        }
+
+        public static bool SetAdminFlag(string targetPath)
+        {
+            bool newValue = !GetAdminFlag(targetPath);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers", true);
+            if (newValue)
+                key.SetValue(targetPath, "RUNASADMIN");
+            else
+                key.DeleteValue(targetPath, false);
+
+            key.Close();
+            key.Dispose();
+
+            return newValue;
+        }
+
+        public static CompatFlags GetCompatFlag(string file)
+        {
+            CompatFlags compatFlag = CompatFlags.none;
+
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers");
+            if (key.GetValueNames().Contains(file))
+            {
+                compatFlag = Parse(key.GetValue(file).ToString());
+            }
+
+            return compatFlag;
+        }
+
+        public static CompatFlags Parse(string value)
+        {
+            CompatFlags compatFlag = CompatFlags.none;
+
+            if (value.Contains("Vista"))
+                value = value.Replace("Windows Vista", "Vista");
+            if (value.Contains("Windows"))
+                value = value.Replace("Windows", "WIN").ToUpper();
+
+            value = value.Replace(" ", "");
+
+            if (!value.StartsWith("~"))
+                value = "~ " + value.ToUpper();
+
+            
+
+            switch (value)
+            {
+                default:
+                    compatFlag = CompatFlags.none;
+                    break;
+                case "~ WIN95":
+                    compatFlag = CompatFlags.Win95;
+                    break;
+                case "~ WIN98":
+                    compatFlag = CompatFlags.Win98;
+                    break;
+                case "~ WINXPSP2":
+                    compatFlag = CompatFlags.XP2;
+                    break;
+                case "~ WINXPSP3":
+                    compatFlag = CompatFlags.XP3;
+                    break;
+                case "~ VISTA":
+                case "~ VISTARTM":
+                    compatFlag = CompatFlags.Vista;
+                    break;
+                case "~ VISTASP1":
+                    compatFlag = CompatFlags.Vista1;
+                    break;
+                case "~ VISTASP2":
+                    compatFlag = CompatFlags.Vista2;
+                    break;
+                case "~ WIN7":
+                case "~ WIN7RTM":
+                    compatFlag = CompatFlags.Win7;
+                    break;
+                case "~ WIN8":
+                case "~ WIN8RTM":
+                    compatFlag = CompatFlags.Win8;
+                    break;
+            }
+
+            return compatFlag;
+        }
+
+        private static string Get_Win_CompatFlag(CompatFlags compatFlag)
+        {
+            string retVal = "~ ";
+
+            switch (compatFlag)
+            {
+                default:
+                case CompatFlags.none:
+                    retVal = "";
+                    break;
+                case CompatFlags.Win95:
+                    retVal += "WIN95";
+                    break;
+                case CompatFlags.Win98:
+                    retVal += "WIN98";
+                    break;
+                case CompatFlags.XP2:
+                    retVal += "WINXPSP2";
+                    break;
+                case CompatFlags.XP3:
+                    retVal += "WINXPSP3";
+                    break;
+                case CompatFlags.Vista:
+                    retVal += "VISTARTM";
+                    break;
+                case CompatFlags.Vista1:
+                    retVal += "VISTASP1";
+                    break;
+                case CompatFlags.Vista2:
+                    retVal += "VISTASP2";
+                    break;
+                case CompatFlags.Win7:
+                    retVal += "WIN7RTM";
+                    break;
+                case CompatFlags.Win8:
+                    retVal += "WIN8RTM";
+                    break;
+            }
+
+            return retVal;
+        }
+
+        public static void SetCompatFlag(string targetPath, CompatFlags compatFlag)
+        {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers", true);
+
+            switch (compatFlag)
+            {
+                case CompatFlags.none:
+                    key.DeleteValue(targetPath, false);
+                    break;
+                default:
+                    key.SetValue(targetPath, Get_Win_CompatFlag(compatFlag));
+                    break;
+            }
+            key.Close();
+            key.Dispose();
+        }
+
+        public static string[] Win_Compat_List()
+        {
+            List<string> list = new List<string>();
+
+            list.Add("None");
+            list.Add("Windows 95");
+            list.Add("Windows 98");
+            list.Add("Windows XP SP2");
+            list.Add("Windows XP SP3");
+            list.Add("Windows Vista");
+            list.Add("Windows Vista SP1");
+            list.Add("Windows Vista SP2");
+            list.Add("Windows 7");
+            list.Add("Windows 8");
+
+            return list.ToArray();
+        }
+
+        public static CompatFlags[] Get_Short_Compat_List()
+        {
+            return Enum.GetValues(typeof(CompatFlags)).Cast<CompatFlags>().ToArray();
+        }
+
+        public static string Get_Long_Compat_String(CompatFlags flag)
+        {
+            string retval = "";
+      
+            string[] longNames = Win_Compat_List();
+            CompatFlags[] shortNames = Get_Short_Compat_List();
+
+            int index = 0;
+            for (index = 0; index < shortNames.Length; index++)
+            {
+                if (flag.Equals(shortNames[index]))
+                    break;
+            }
+
+            retval = longNames[index];
+
+            Array.Clear(longNames, 0, longNames.Length);
+            Array.Clear(shortNames, 0, shortNames.Length);
+
+            return retval;
+        }
+
+
+        #endregion Shortcut Flags
+
+        #region colors
+
+        public static System.Windows.Media.Color ConvertColor(System.Drawing.Color color)
+        {
+            System.Windows.Media.Color retColor = new System.Windows.Media.Color();
+
+            retColor.A = color.A;
+            retColor.R = color.R;
+            retColor.G = color.G;
+            retColor.B = color.B;
+
+
+            return retColor;
         }
 
         public static string ColorString(System.Drawing.Color color)
@@ -334,19 +519,59 @@ namespace q
             return color;
         }
 
-        public static bool SetAdminFlag(string targetPath)
+        #endregion colors
+
+        #region IO
+
+        public static string GetFreeFileName()
         {
-            bool newValue = !GetAdminFlag(targetPath);
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers", true);
-            if (newValue)
-                key.SetValue(targetPath, "RUNASADMIN");
+            string path = AppDomain.CurrentDomain.BaseDirectory + "\\ShortcutCollections";
+
+            if (!System.IO.Directory.Exists(path))
+                System.IO.Directory.CreateDirectory(path);
+
+
+
+            return _getFreeFile(path, "newCollection.qtb");
+        }
+
+        private static string _getFreeFile(string path, string lastFileName)
+        {
+
+            string ext = ".qtb";
+            string fileName = lastFileName.Replace(ext, "");
+            int number = 0;
+
+            var di = new System.IO.DirectoryInfo(path);
+
+            System.IO.FileInfo[] files = di.GetFiles("*.qtb");
+
+            bool contains = false;
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i].Name.Equals(lastFileName))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+
+            if (contains)
+            {
+                if (fileName.Contains("_"))
+                {
+                    int.TryParse(fileName.Split('_')[1], out number);
+                    fileName = fileName.Split('_')[0];
+                }
+
+                number++;
+                return _getFreeFile(path, string.Format("{0}_{1}{2}", fileName, number, ext));
+
+            }
             else
-                key.DeleteValue(targetPath, false);
-
-            key.Close();
-            key.Dispose();
-
-            return newValue;
+            {
+                return lastFileName;
+            }
         }
 
         public static bool IsFile(string target)
@@ -361,7 +586,7 @@ namespace q
             if (fileName.Contains("."))
             {
                 string ext = fileName.Substring(fileName.LastIndexOf("."));
-                result = ext.Length == 4||ext.Length==5; // Virtual box Extension is 4
+                result = ext.Length == 4 || ext.Length == 5; // Virtual box Extension is 4
             }
             return result;
         }
@@ -385,6 +610,8 @@ namespace q
             return result;
         }
 
+        #endregion IO
+
         public static void ExploreFile(string filePath)
         {
             string path = filePath.Substring(0, filePath.LastIndexOf("\\"));
@@ -403,6 +630,8 @@ namespace q
             }
             Marshal.FreeCoTaskMem(folder);
         }
+
+
     }
 }
 

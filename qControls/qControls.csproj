@@ -137,5 +137,18 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\Vista.png" />
+    <EmbeddedResource Include="images\Win95.png" />
+    <EmbeddedResource Include="images\Win98.png" />
+    <EmbeddedResource Include="images\XP2.png" />
+    <EmbeddedResource Include="images\XP3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\7.png" />
+    <Resource Include="images\8.png" />
+    <Resource Include="images\Vista1.png" />
+    <Resource Include="images\Vista2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
