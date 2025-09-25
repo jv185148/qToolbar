@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Serialization;
 
 namespace qMain
 {
@@ -65,7 +66,7 @@ namespace qMain
             fileWatcher.Changed += SettingsWatcher_Changed;
 
             child.RightClicked += Child_RightClicked;
-
+            child.lowOpacityValue = 0.4d;
         }
 
 
@@ -154,7 +155,8 @@ namespace qMain
         {
 
             Window window = (Window)child.iSettingsForm;
-            (child as Window).Opacity = 0.4d;
+            child.SetLowOpacity();
+
             if (window.ShowDialog() == true)
             {
 
@@ -181,7 +183,7 @@ namespace qMain
                 }
                 LoadSettings();
             }
-            (child as Window).Opacity = 1d;
+            child.SetNormalOpacity();
         }
 
         private void LoadSettings()
@@ -513,6 +515,7 @@ namespace qMain
                         case ".exe":
                             button.WorkingDirectory = file.Substring(0, file.LastIndexOf("\\"));
                             button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
+                            button.CompatFlag = q.Common.GetCompatFlag(button.TargetPath);
                             button.IconLocation = file + ",0";
 
                             break;
@@ -794,7 +797,7 @@ namespace qMain
             cm.Closed += ((object o, RoutedEventArgs args) =>
              {
                  if (!dontLightUp)
-                     (child as Window).Opacity = 1d;
+                     child.SetNormalOpacity();
              });
             cm.Items.Add(mnuOpen);
             cm.Items.Add(mnuSave);
@@ -808,7 +811,7 @@ namespace qMain
             cm.PlacementTarget = (UIElement)child;
             cm.IsOpen = true;
 
-            (child as Window).Opacity = 0.4;
+            child.SetLowOpacity();
         }
 
 
@@ -834,6 +837,27 @@ namespace qMain
             admin.Click += ((object aSender, RoutedEventArgs e) =>
             {
                 button.RunAdmin = q.Common.SetAdminFlag(button.TargetPath);
+            });
+
+            MenuItem mnuCompat = new MenuItem() { Header = "Compatibility..." };
+            mnuCompat.Click += ((object aSender, RoutedEventArgs e) =>
+            {
+                child.compatDialog.targetFile = button.TargetPath;
+                Window window = (Window)child.compatDialog;// (child.compatDialog as Window).ShowDialog();
+                (window as qCommon.Interfaces.iCompatDialog).CurrentFlag = button.CompatFlag;
+
+                child.WaitOnOpacityRequest += Child_WaitOnOpacityRequest;
+                child.RequestOpacityChange_WaitOn(window);
+
+                window.Owner = (Window)child;
+                child.SetLowOpacity();
+                if (window.ShowDialog() == true)
+                {
+
+                    button.CompatFlag = (window as qCommon.Interfaces.iCompatDialog).flag;
+                }
+
+                child.SetNormalOpacity();
             });
 
             MenuItem remove = new MenuItem() { Header = "Remove" };
@@ -890,9 +914,12 @@ namespace qMain
 
             cm.Closed += ((object o, RoutedEventArgs args) =>
               {
-                  (child as Window).Opacity = 1d;
+                  child.SetNormalOpacity();
               });
             cm.Items.Add(admin);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(mnuCompat);
+            cm.Items.Add(new Separator());
             cm.Items.Add(rename);
             cm.Items.Add(edit);
             cm.Items.Add(changeIcon);
@@ -904,10 +931,28 @@ namespace qMain
 
             cm.PlacementTarget = (UIElement)sender;
             cm.IsOpen = true;
-            (child as Window).Opacity = 0.4d;
+            
+            child.SetLowOpacity();
 
             button.ForceSelected = true;
         }
+
+        private void Child_WaitOnOpacityRequest(Window window)
+        {
+            child.OpacityWait = true;
+
+            window.Closed += Window_Closed;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            child.SetNormalOpacity();
+
+            child.WaitOnOpacityRequest -= Child_WaitOnOpacityRequest;
+            child.OpacityWait = false;
+        }
+
+
 
         #endregion //qButton Click Events
 
@@ -988,7 +1033,11 @@ namespace qMain
 
                 };
             }
-            p?.Start();
+            try
+            {
+                p?.Start();
+            }
+            catch { }
         }
 
         private void Explore(string filePath)

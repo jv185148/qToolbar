@@ -16,6 +16,7 @@ namespace qCommon
         public delegate void dClicked(object sender);
         public delegate void dDragging(object sender);
         public delegate void dDraggingDone(object sender, System.Windows.Input.MouseEventArgs e);
-            
+
+        public delegate void WindowCloseEvent(Window window);
     }
 }

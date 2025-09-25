@@ -1,4 +1,5 @@
-﻿using System;
+﻿using q;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -65,6 +66,7 @@ namespace qControls
         string workingDirectory;
         bool isSteamApp;
         bool runAdmin;
+        q.Common.CompatFlags compatFlag;
 
         [Category("qToolbar")]
         public string Description
@@ -98,6 +100,8 @@ namespace qControls
         public bool IsSteamApp { get => isSteamApp; set { isSteamApp = value; SetSteam(); } }
 
         public bool RunAdmin { get => runAdmin; set { runAdmin = value; SetRunAdmin(); } }
+
+        public Common.CompatFlags CompatFlag { get => compatFlag; set { compatFlag = value; SetCompatFlag(); } }
 
         private ImageSource imageSource;
         [Category("qToolbar")]
@@ -208,6 +212,7 @@ namespace qControls
             else
                 imgAdmin.Visibility = Visibility.Hidden;
         }
+
         private void loadAdminImage()
         {
             var bitmap = Properties.Resources.adminShield;
@@ -227,6 +232,65 @@ namespace qControls
 
             imgAdmin.Source = bImage;
             imgAdmin.Visibility = Visibility.Visible;
+        }
+
+        internal void SetCompatFlag()
+        {
+            loadCompatImage();
+        }
+
+        private void loadCompatImage()
+        {
+            if (compatFlag == Common.CompatFlags.none)
+            {
+                imgCompat.Visibility = Visibility.Hidden;
+                imgCompat.Source = null;
+                return;
+            }
+            System.Drawing.Bitmap bitmap = null;
+
+            switch (compatFlag)
+            {
+                case Common.CompatFlags.none:
+                    bitmap = null;
+                    break;
+                case Common.CompatFlags.Win95:
+                    bitmap = Properties.Resources.Win95;
+                    break;
+                case Common.CompatFlags.Win98:
+                    bitmap = Properties.Resources.Win98;
+                    break;
+                case Common.CompatFlags.XP2:
+                    bitmap = Properties.Resources.XP2;
+                    break;
+                case Common.CompatFlags.XP3:
+                    bitmap = Properties.Resources.XP3;
+                    break;
+                case Common.CompatFlags.Vista:
+                    bitmap = Properties.Resources.Vista;
+                    break;
+                case Common.CompatFlags.Vista1:
+                    bitmap = Properties.Resources.Vista1;
+                    break;
+                case Common.CompatFlags.Vista2:
+                    bitmap = Properties.Resources.Vista2;
+                    break;
+                case Common.CompatFlags.Win7:
+                    bitmap = Properties.Resources._7;
+                    break;
+                case Common.CompatFlags.Win8:
+                    bitmap = Properties.Resources._8;
+                    break;
+                default:
+                    break;
+            }
+
+            BitmapImage bImage = q.Common.GetResourceImage(bitmap);
+
+
+            imgCompat.Source = bImage;
+            imgCompat.Visibility = Visibility.Visible;
+
         }
 
         public qFileButton()
@@ -403,7 +467,7 @@ namespace qControls
             this.WorkingDirectory = shortcut.WorkingDirectory;
             this.IsSteamApp = false;
             this.RunAdmin = q.Common.GetAdminFlag(targetPath);
-
+            this.CompatFlag = q.Common.GetCompatFlag(targetPath);
             shortcut.Dispose();
         }
 

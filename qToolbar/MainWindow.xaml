@@ -4,15 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:qToolbar"
-        xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="qToolbar.MainWindow"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
+            x:Class="qToolbar.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing" MouseDown="Window_MouseDown">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop" 
+            DragLeave="Grid_DragLeave" Closed="Window_Closed" Closing="Window_Closing" MouseDown="Window_MouseDown">
 
     <Grid Name="grid" DragEnter="Grid_DragEnter" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
         <Image Name="imgBackground" Margin="0,0"/>
 
         <ScrollViewer x:Name="myScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,0,35">
-            <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+            <WrapPanel x:Name="GridArea" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,20" 
+                       ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                 <b:Interaction.Behaviors>
                     <b:FluidMoveBehavior AppliesTo="Children">
                         <b:FluidMoveBehavior.EaseY>

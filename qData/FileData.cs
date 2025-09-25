@@ -15,9 +15,9 @@ namespace qData
 
         string path = System.AppDomain.CurrentDomain.BaseDirectory;
 
-        public bool ShortcutFileChanged=false;
+        public bool ShortcutFileChanged = false;
 
-        public string ChangedFile="";
+        public string ChangedFile = "";
 
         public FileData(string qtbFile)
         {
@@ -122,7 +122,7 @@ namespace qData
 
 
 
-            if (!System.IO.File.Exists(path + "\\" + qtbFile))return  new qControls.qFileButton[0];
+            if (!System.IO.File.Exists(path + "\\" + qtbFile)) return new qControls.qFileButton[0];
 
             System.IO.FileStream fs = new System.IO.FileStream(path + "\\" + qtbFile, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
@@ -212,6 +212,7 @@ namespace qData
                     button.IconLocation = lines[3] == "NA" ? "" : lines[3];
                     button.Image = getImageSource(lines[8]);
                     button.RunAdmin = q.Common.GetAdminFlag(button.TargetPath);
+                    button.CompatFlag = q.Common.GetCompatFlag(button.TargetPath);
                     button.SelectedBrush = settings.SelectColor;
                     button.TextForegroundSelect = settings.ForegroundSelectColor;
                     button.TextForeground = settings.ForegroundColor;
@@ -240,7 +241,7 @@ namespace qData
 
             if (!System.IO.Directory.Exists(path))
                 System.IO.Directory.CreateDirectory(path);
-            
+
             foreach (var file in di.GetFiles("*.qtb"))
             {
                 collections.Add(file.Name);

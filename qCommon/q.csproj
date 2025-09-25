@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Events.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Interfaces\iCompatDialog.cs" />
     <Compile Include="Interfaces\iEditShortcutW.cs" />
     <Compile Include="Interfaces\iMain.cs" />
     <Compile Include="Interfaces\iWindowSettings.cs" />
